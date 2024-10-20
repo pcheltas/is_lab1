@@ -1,0 +1,42 @@
+.actions-container {
+    max-width: 500px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+}
+
+.action-item {
+    border: 1px solid #ddd; /* Рамка для каждого действия */
+    border-radius: 4px; /* Скругление углов */
+    margin: 10px 0; /* Отступ между действиями */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+}
+
+.action-item:hover {
+    background-color: #f9f9f9; /* Цвет при наведении */
+}
+
+.action-title {
+    padding: 10px; /* Отступ внутри рамки */
+    cursor: pointer; /* Курсор в виде руки */
+    font-weight: bold; /* Жирный шрифт для заголовка */
+}
+
+.action-details {
+    padding: 10px; /* Отступ внутренней информации */
+    border-top: 1px solid #ddd; /* Разделитель между заголовком и деталями */
+}
+
+.apply-button {
+    margin-top: 10px; /* Отступ сверху для кнопки */
+    padding: 8px 16px; /* Отступ внутри кнопки */
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff; /* Цвет фона кнопки */
+    color: #fff; /* Цвет текста на кнопке */
+    cursor: pointer; /* Курсор в виде руки для кнопки */
+    transition: background-color 0.3s; /* Плавный переход цвета фона */
+}
+
+.apply-button:hover {
+    background-color: #0056b3; /* Темнее при наведении */
+}

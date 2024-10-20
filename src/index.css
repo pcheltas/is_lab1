@@ -1,0 +1,225 @@
+/* App.css */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #0a0ace;
+    color: #fff;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100vw;
+    height: 80px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+header div {
+    display: flex;
+    align-items: center;
+}
+
+header button {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+
+header button:hover {
+    background: #c0392b;
+}
+
+div {
+    padding: 0px;
+}
+
+h2, h3 {
+    margin-top: 0;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form input {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form button {
+    background: #0a0ace;
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+form button:hover {
+    background: rgba(21, 21, 134, 0.74);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #3498db;
+    color: white;
+}
+
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+.container {
+    display: flex;
+    flex-direction: column; /* Упорядочим элементы по вертикали */
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    height: 80px;
+    background-color: #333;
+    color: white;
+
+}
+
+.mainPage {
+    flex-grow: 1; /* Позволяет контенту занимать оставшееся пространство */
+    padding: 20px;
+    background-color: #f1f1f1;
+    width: 100vw;
+}
+
+.columns {
+    display: flex;
+}
+
+.products {
+    flex: 2; /* З занимает 2 части из 3 */
+    /* Добавьте дополнительные стили, если необходимо */
+}
+
+.actions {
+    flex: 1; /* Занимает 1 часть из 3 */
+    /* Добавьте дополнительные стили, если необходимо */
+}
+
+
+.user-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.icon {
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 30px; /* Расположение под иконкой */
+    right: 0;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(204, 33, 33, 0.2);
+    z-index: 1000; /* Чтобы выпадающий список был выше других элементов */
+    border: 1px solid #000000;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    font-family: "Fira Sans", sans-serif;
+    width: max-content;
+}
+
+.dropdown-menu button {
+    width: 100%;
+    padding: 8px;
+    border-color: black;
+    border-width: 2px;
+    background: transparent;
+    cursor: pointer;
+    align-self: flex-end;
+    color: black;
+    font-size: 16px;
+}
+
+.dropdown-menu button:hover {
+    background-color: #3498db; /* Цвет при наведении */
+}
+
+.productTableBody:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer; /* Изменяет указатель на "руку" */
+    transition: filter 0.2s; /* Эффект плавной анимации при наведении */
+}
+
+.icon-button:hover {
+    filter: brightness(1.2); /* Осветляет изображение при наведении */
+}
+
+.btn {
+    background-color: #167bff; /* Основной цвет кнопки */
+    color: #ffffff; /* Цвет текста на кнопке */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругление углов */
+    padding: 10px 20px; /* Внутренние отступы */
+    font-weight: 600; /* Жирный текст */
+    font-family: "Fira Sans", sans-serif; /* Шрифт для кнопки */
+    cursor: pointer; /* Курсор при наведении */
+    transition: background-color 0.3s, transform 0.2s; /* Плавный переход */
+    width: 150px; /* Фиксированная ширина кнопки */
+    margin: 10px auto; /* Центрирование кнопки с отступом сверху и снизу */
+    display: block; /* Убедитесь, что кнопка отображается как блочный элемент */
+}
+
+.btn:hover {
+    background-color: #0f5dcc; /* Цвет кнопки при наведении */
+    transform: translateY(-2px); /* Легкий подъем при наведении */
+}
+
+.btn:focus {
+    outline: none; /* Убираем стандартный контур при фокусе */
+    box-shadow: 0 0 0 4px rgba(34, 35, 58, 0.2); /* Легкая тень при фокусе */
+}
+
+.align-center{
+    text-align: center;
+}

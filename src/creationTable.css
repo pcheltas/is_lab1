@@ -1,0 +1,114 @@
+.modal-overlay {
+    position: fixed;
+    flex-direction: row;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*z-index: 1000;*/
+    font-size: small;
+}
+
+.modal-content {
+    /*background: white;*/
+    /*padding: 20px;*/
+    /*border-radius: 5px;*/
+    /*box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);*/
+    background: white;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 7px; /* Отступ внутри модального окна */
+    /*max-width: 80%; !* Максимальная ширина окна *!*/
+    /*max-height: 80%; !* Максимальная высота окна *!*/
+    /*overflow: auto; !* Прокрутка, если содержимое превышает размеры *!*/
+    width: auto;
+}
+
+button {
+    margin-top: 10px;
+}
+
+.create-product-button{
+    background-color: #3498db;; /* Основной цвет кнопки */
+    color: #ffffff; /* Цвет текста на кнопке */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругление углов */
+    padding: 20px 30px; /* Внутренние отступы */
+    font-size: large;
+    font-weight: 600; /* Жирный текст */
+    font-family: "Fira Sans", sans-serif; /* Шрифт для кнопки */
+    cursor: pointer; /* Курсор при наведении */
+    transition: background-color 0.3s, transform 0.2s; /* Плавный переход */
+    width: auto; /* Фиксированная ширина кнопки */
+    margin: 10px auto; /* Центрирование кнопки с отступом сверху и снизу */
+    display: block; /* Убедитесь, что кнопка отображается как блочный элемент */
+}
+
+.create-product-button:hover {
+    background-color: #0f5dcc; /* Цвет кнопки при наведении */
+    transform: translateY(-2px); /* Легкий подъем при наведении */
+}
+
+.create-product-button:focus {
+    outline: none; /* Убираем стандартный контур при фокусе */
+    box-shadow: 0 0 0 4px rgba(34, 35, 58, 0.2); /* Легкая тень при фокусе */
+}
+
+.creation-box{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.item-box {
+    border: 3px solid #0f5dcc; /* Ширина 2px, цвет синего */
+    border-radius: 10px; /* Радиус закругления углов */
+    padding: 7px; /* Внутренний отступ для содержимого */
+    margin: 10px; /* Внешний отступ для размещения элемента на странице */
+    background-color: white; /* Цвет фона для контраста */
+}
+
+input::placeholder {
+    color: rgb(16, 61, 115); /* Укажите желаемый цвет текста */
+    opacity: 1; /* Устанавливает непрозрачность текста */
+}
+
+span {
+    display: block; /* Обеспечивает, что текст названия будет на новой строке */
+    margin-bottom: 5px;
+}
+
+.flex-row{
+    display: flex;
+    flex-direction: row;
+}
+
+.button-container {
+    display: flex;
+    justify-content: end; /* Выровнять содержимое по правому краю */
+}
+
+.close-button {
+    background-color: #0f5dcc; /* Цвет фона */
+    color: white; /* Цвет текста */
+    border: none; /* Убираем границу */
+    border-radius: 50%; /* Округляем углы для круглой формы */
+    width: 30px; /* Ширина кнопки */
+    height: 30px; /* Высота кнопки */
+    font-size: 20px; /* Размер шрифта для крестика */
+    cursor: pointer; /* Изменение курсора при наведении */
+    display: flex; /* Используем flex для центрирования содержимого */
+    align-items: center; /* Центрирование по вертикали */
+    justify-content: center; /* Центрирование по горизонтали */
+}
+
+.close-button:hover {
+    background-color: darkblue; /* Изменение цвета при наведении */
+}
+
+h2{
+    font-size: medium;
+}

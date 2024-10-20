@@ -1,0 +1,20 @@
+.error-popup {
+    margin-top: 5px;
+    font-size: smaller;
+
+    /*position: absolute;*/
+
+    /*background-color: rgba(255, 0, 0, 0.9); !* Красный фон с прозрачностью *!*/
+    color: red;
+    padding: 0px;
+    border-radius: 5px;
+    /*z-index: 10;*/
+}
+
+.error-popup:before {
+    /*content: '';*/
+    /*position: absolute;*/
+    /*top: 50%;*/
+    border-width: 5px;
+    border-style: solid;
+}
