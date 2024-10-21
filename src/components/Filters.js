@@ -138,23 +138,30 @@ const Filters = () => {
     const handlePageClick = (event) => {
         setPage(event.selected)
         if (!requestParams.includes('?')) {
-            return `?page=${event.selected}`;
+            const newRequest = `?page=${event.selected}`;
+            dispatch(setRequestParams(newRequest))
+            dispatch(fetchProducts([token, newRequest]))
         }
-        const [base, params] = requestParams.split('?');
-        const newParams = `page=${event.selected}&${params}`;
-        const newRequest = `${base}?${newParams}`; // Склеиваем обратно
-        dispatch(setRequestParams(newRequest))
-        dispatch(fetchProducts([token, newRequest]))
+        else{
+            const [base, params] = requestParams.split('?');
+            const newParams = `page=${event.selected}&${params}`;
+            const newRequest = `${base}?${newParams}`; // Склеиваем обратно
+            dispatch(setRequestParams(newRequest))
+            dispatch(fetchProducts([token, newRequest]))
+        }
+
     };
 
     const handleLimitChange = (event) => {
         setLimit(event.target.value)
         if (!requestParams.includes('?')) {
-            return `?limit=${event.target.value}`;
+            const newRequest = `?limit=${event.target.value}`;
+            dispatch(setRequestParams(newRequest))
+            dispatch(fetchProducts([token, newRequest]))
         }
         const [base, params] = requestParams.split('?');
         const newParams = `limit=${event.target.value}&${params}`;
-        const newRequest = `${base}?${newParams}`; // Склеиваем обратно
+        const newRequest = `${base}?${newParams}`;
         dispatch(setRequestParams(newRequest))
         dispatch(fetchProducts([token, newRequest]))
     };
