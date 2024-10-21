@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import {fetchProducts} from "./productSlice";
 
 const API_URL = 'http://localhost:8080';
 const initialState = {
@@ -24,12 +25,12 @@ export const register = createAsyncThunk('auth/register', async (userDto) => {
 });
 
 export const login = createAsyncThunk('auth/login', async (authDto) => {
-    const response = await axios.post(`${API_URL}/login`, authDto, {
-        headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-        },
-    });
+    const headers = {
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    const response = await axios.post(`${API_URL}/login`, authDto, {headers});
 
+    console.log(response.status)
     if (response.status !== 200) {
         throw new Error(`Ошибка при логине: ${response.status}`);
     }

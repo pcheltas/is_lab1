@@ -1,38 +1,79 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-import {useSelector} from "react-redux";
+import axios from "axios";
 
 
 const API_URL = 'http://localhost:8080';
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-    const response = await fetch(`${API_URL}/products`);
-    if (!response.ok) {
+// export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
+//     const response = await fetch(`${API_URL}/products`);
+//     if (!response.ok) {
+//         console.log(response)
+//         throw new Error('Failed to fetch products');
+//     }
+//     return await response.json();
+// });
+
+export const fetchProducts = createAsyncThunk('products/fetchProducts', async (args) => {
+
+    console.log(fetch)// const axiosInstance = axios.create({
+    //     baseURL: 'http://localhost:8080/',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //     }
+    // })
+    //
+    // axiosInstance.interceptors.request.use(
+    //     (config) => {
+    //         if (token) {
+    //             config.headers['Authorization'] = `Bearer ${token}`;
+    //         }
+    //         return config;
+    //     },
+    //     (error) => {
+    //         return Promise.reject(error);
+    //     }
+    // );
+
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + args[0]
+        }
+    }
+    console.log(getHeaders)
+    const response = await axios.get(`${API_URL}/products${args[1]}`, getHeaders);
+    console.log(response.status)
+    if (response.status !== 200) {
+        console.log(response)
         throw new Error('Failed to fetch products');
     }
-    return await response.json();
+    return await response.data;
 });
 
-export const fetchUnitOfMeasure = createAsyncThunk('products/fetchUnitOfMeasure', async () => {
-    const response = await fetch(`${API_URL}/measures`);
-    if (!response.ok) {
+export const fetchUnitOfMeasure = createAsyncThunk('products/fetchUnitOfMeasure', async (token) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    const response = await axios.get(`${API_URL}/measures`, getHeaders);
+    if (response.status !== 200) {
         throw new Error('Failed to fetch units of measure');
     }
-    return await response.json();
+    console.log(response.data)
+    return await response.data;
 });
 
-export const addProduct = createAsyncThunk('products/addProduct', async (newProduct, token) => {
-    const response = await fetch(`${API_URL}/products`, {
-        mode: 'no-cors',
-        method: 'POST',
+export const addProduct = createAsyncThunk('products/addProduct', async (args) => {
+    const getHeaders = {
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify(newProduct),
-    });
-    if (!response.ok) {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.post(`${API_URL}/products`, args[0], getHeaders);
+    if (response.status !== 201) {
         throw new Error('Failed to add product');
     }
-    return await response.json();
+    return await response.data;
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async (updatedProduct, token) => {
@@ -40,7 +81,7 @@ export const updateProduct = createAsyncThunk('products/updateProduct', async (u
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            'Authorization': 'Bearer' + token,
         },
         body: JSON.stringify(updatedProduct),
     });
@@ -70,8 +111,13 @@ const productSlice = createSlice({
     initialState: {
         products: [  ],
         unitOfMeasure: [ ],
+        requestParams: ""
     },
-    reducers: {},
+    reducers: {
+        setRequestParams(state, action) {
+            state.requestParams = action.payload;
+        }
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchUnitOfMeasure.pending, (state) => {
@@ -142,4 +188,5 @@ const productSlice = createSlice({
     },
 });
 
+export const { setRequestParams } = productSlice.actions;
 export default productSlice.reducer;

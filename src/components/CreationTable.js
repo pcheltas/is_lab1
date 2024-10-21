@@ -7,49 +7,92 @@ import '../creationTable.css'
 
 const CreationTable = ({isOpen, onClose}) => {
     const dispatch = useDispatch();
-    const token = useSelector(state => state.auth.token)
+    const token = useSelector(state => state.auth.token);
+
+    // const [product, setProduct] = useState({
+    //     name: '',
+    //     coordinates: {
+    //         x: '',
+    //         y: '',
+    //     },
+    //     creationDate: '',
+    //     unitOfMeasure: '',
+    //     manufacturer: {
+    //         name: '',
+    //         officialAddress: {
+    //             zipcode: '',
+    //             town: {
+    //                 x: '',
+    //                 y: '',
+    //                 z: '',
+    //                 name: '',
+    //             }
+    //         },
+    //         annualTurnover: '',
+    //         employeesCount: '',
+    //         fullName: '',
+    //         rating: '',
+    //     },
+    //     price: '',
+    //     manufactureCost: '',
+    //     rating: '',
+    //     owner: {
+    //         name: '',
+    //         eyeColor: '',
+    //         hairColor: '',
+    //         location: {
+    //             x: '',
+    //             y: '',
+    //             z: '',
+    //             name: '',
+    //         },
+    //         height: '',
+    //         nationality: '',
+    //     }
+    // });
 
     const [product, setProduct] = useState({
-        name: '',
-        coordinates: {
-            x: '',
-            y: '',
-        },
-        creationDate: '',
-        unitOfMeasure: '',
-        manufacturer: {
-            name: '',
-            officialAddress: {
-                zipcode: '',
-                town: {
-                    x: '',
-                    y: '',
-                    z: '',
-                    name: '',
-                }
+            "name": "product",
+            "coordinates": {
+                "x": 1,
+                "y": 2.0
             },
-            annualTurnover: '',
-            employeesCount: '',
-            fullName: '',
-            rating: '',
-        },
-        price: '',
-        manufactureCost: '',
-        rating: '',
-        owner: {
-            name: '',
-            eyeColor: '',
-            hairColor: '',
-            location: {
-                x: '',
-                y: '',
-                z: '',
-                name: '',
+            "creationDate": "2024-10-09",
+            "unitOfMeasure": "CENTIMETERS",
+            "manufacturer": {
+                "name": "org",
+                "officialAddress": {
+                    "town": {
+                        "x": 1,
+                        "y": 2.0,
+                        "z": 3,
+                        "name": "town"
+                    },
+                    "zipCode": "eklvmqekfrv",
+                },
+                "annualTurnover": 1,
+                "employeesCount": 100,
+                "fullName": "organization",
+                "rating": 1
             },
-            height: '',
-            nationality: '',
+            "price": 500,
+            "manufactureCost": 1111,
+            "rating": 1.0,
+            "owner": {
+                "name": "Mike",
+                "eyeColor": "BLUE",
+                "hairColor": "WHITE",
+                "location": {
+                    "x": 5,
+                    "y": 6.0,
+                    "z": 7,
+                    "name": "home"
+                },
+                "height": 183,
+                "nationality": "UNITED_KINGDOM"
+            }
         }
-    });
+    )
     const [errors, setErrors] = useState({});
     const color = useSelector(state => state.person.color || [])
     const country = useSelector(state => state.person.country || [])
@@ -222,8 +265,8 @@ const CreationTable = ({isOpen, onClose}) => {
         if (!product.manufacturer.fullName) {
             newErrors.fullName = 'Полное название не может быть пустым';
         }
-        if (!product.manufacturer.officialAddress.zipcode) {
-            newErrors.zipcode = 'Индекс не может быть пустым';
+        if (!product.manufacturer.officialAddress.zipCode) {
+            newErrors.zipCode = 'Индекс не может быть пустым';
         }
         const town = product.manufacturer.officialAddress.town;
         if (!town.x) {
@@ -252,8 +295,8 @@ const CreationTable = ({isOpen, onClose}) => {
     const handleConfirmClick = (e) => {
         e.preventDefault();
         if (validate()) {
-            dispatch(addProduct(JSON.stringify(product)), token)
-            console.log(product);
+            dispatch(addProduct([JSON.stringify(product), token]))
+            onClose()
         }
     };
 
@@ -463,11 +506,11 @@ const CreationTable = ({isOpen, onClose}) => {
                                 <h2>Официальный адрес </h2>
                                 <p>
                                     <span>Индекс</span>
-                                    <input name="manufacturer.officialAddress.zipcode"
-                                           value={product.manufacturer.officialAddress.zipcode}
+                                    <input name="manufacturer.officialAddress.zipCode"
+                                           value={product.manufacturer.officialAddress.zipCode}
                                            onChange={handleInputChange}/>
-                                    {errors.zipcode &&
-                                        <p className="error-popup">{errors.zipcode}</p>}
+                                    {errors.zipCode &&
+                                        <p className="error-popup">{errors.zipCode}</p>}
                                 </p>
                                 <div className="item-box">
                                     <h2>Город</h2>

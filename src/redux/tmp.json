@@ -1,0 +1,41 @@
+{
+  "name": "product",
+  "coordinates": {
+    "x": 1,
+    "y": 2
+  },
+  "creationDate": "2024-10-09",
+  "unitOfMeasure": "CENTIMETERS",
+  "manufacturer": {
+    "name": "org",
+    "officialAddress": {
+      "town": {
+        "x": 1,
+        "y": 2,
+        "z": 3,
+        "name": "town"
+      },
+      "zipCode": "ifjev123"
+    },
+    "annualTurnover": 1,
+    "employeesCount": 100,
+    "fullName": "organization",
+    "rating": 1
+  },
+  "price": 500,
+  "manufactureCost": 1111,
+  "rating": 1,
+  "owner": {
+    "name": "Mike",
+    "eyeColor": "BLUE",
+    "hairColor": "WHITE",
+    "location": {
+      "x": 5,
+      "y": 6,
+      "z": 7,
+      "name": "home"
+    },
+    "height": 183,
+    "nationality": "UNITED_KINGDOM"
+  }
+}

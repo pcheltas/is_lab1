@@ -1,29 +1,50 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from "axios";
 
 
 const API_URL = 'http://localhost:8080';
-export const fetchPersons = createAsyncThunk('person/fetchPersons', async () => {
-    const response = await fetch(`${API_URL}/persons`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch persons');
+export const fetchPersons = createAsyncThunk('person/fetchPersons', async (token) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     }
-    return response.json();
-});
-
-export const fetchColors = createAsyncThunk('person/fetchColors', async () => {
-    const response = await fetch(`${API_URL}/colors`);
-    if (!response.ok) {
+    const response = await axios.get(`${API_URL}/persons`, getHeaders);
+    if (response.status !== 200) {
         throw new Error('Failed to fetch colors');
     }
-    return response.json();
+    return await response.data;
+});
+
+export const fetchColors = createAsyncThunk('person/fetchColors', async (token) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    const response = await axios.get(`${API_URL}/colors`, getHeaders);
+    if (response.status !== 200) {
+        throw new Error('Failed to fetch colors');
+    }
+    return await response.data;
 })
 
-export const fetchCountries = createAsyncThunk('person/fetchCountries', async () => {
-    const response = await fetch(`${API_URL}/countries`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch countries');
+export const fetchCountries = createAsyncThunk('person/fetchCountries', async (token) => {
+    // const response = await fetch(`${API_URL}/countries`);
+    // if (!response.ok) {
+    //     throw new Error('Failed to fetch countries');
+    // }
+    // return response.json();
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     }
-    return response.json();
+    const response = await axios.get(`${API_URL}/countries`, getHeaders);
+    if (response.status !== 200) {
+        throw new Error('Failed to fetch colors');
+    }
+    return await response.data;
 })
 
 const personSlice = createSlice({

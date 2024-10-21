@@ -4,10 +4,15 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchProducts, fetchUnitOfMeasure} from "../redux/productSlice";
-import {fetchColors, fetchCountries} from "../redux/personSlice";
+import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
+import {fetchManufacturers} from "../redux/manufacturerSlice";
+import {fetchCoordinates} from "../redux/coordinatesSlice";
+import {fetchUsers} from "../redux/userSlice";
 
 const ProductTable = () => {
     const dispatch = useDispatch();
+    const token = useSelector(state => state.auth.token);
+    const requestParams = useSelector(state => state.product.requestParams);
     const products = useSelector(state => state.product.products || [])
     const color = useSelector(state => state.person.color || [])
     const country = useSelector(state => state.person.country || [])
@@ -20,9 +25,13 @@ const ProductTable = () => {
     useEffect(() => {
         const loadData = async () => {
             await Promise.all([
-                dispatch(fetchColors()),
-                dispatch(fetchCountries()),
-                dispatch(fetchUnitOfMeasure()),
+                dispatch(fetchColors(token)),
+                dispatch(fetchCountries(token)),
+                dispatch(fetchUnitOfMeasure(token)),
+                dispatch(fetchManufacturers(token)),
+                dispatch(fetchPersons(token)),
+                dispatch(fetchCoordinates(token)),
+                dispatch(fetchUsers(token))
                 // dispatch(fetchProducts())
             ]);
         };
@@ -56,7 +65,7 @@ const ProductTable = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            await dispatch(fetchProducts());
+            await dispatch(fetchProducts([token, requestParams]));
             setLoading(false);
         };
         loadData();
@@ -68,7 +77,6 @@ const ProductTable = () => {
 
     return (
         <div>
-            <h2>Продукты</h2>
             <Filters/>
             <table>
                 <thead>
@@ -83,6 +91,7 @@ const ProductTable = () => {
                     <th>Себестоимость</th>
                     <th>Рейтинг</th>
                     <th>Владелец</th>
+                    <th>Создатель</th>
                     <th></th>
                 </tr>
                 </thead>
@@ -101,6 +110,7 @@ const ProductTable = () => {
                                     <td>{product.manufactureCost}</td>
                                     <td>{product.rating}</td>
                                     <td>{product.owner.name}</td>
+                                    <td>{product.user.login}</td>
                                     <td>
                                         <button onClick={(e) => {
                                             e.stopPropagation();
