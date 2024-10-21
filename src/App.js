@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {Provider, useDispatch} from 'react-redux';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import store from './redux/store'
 import Header from './components/Header';
 import Auth from './components/Auth';
@@ -9,7 +9,9 @@ import './index.css';
 import Actions from "./components/Actions";
 import CreateProduct from "./components/CreateProduct";
 import {fetchColors, fetchCountries} from "./redux/personSlice";
-import {fetchUnitOfMeasure} from "./redux/productSlice"; // Импортируем стили
+import {fetchUnitOfMeasure} from "./redux/productSlice";
+import {PersistGate} from "redux-persist/integration/react";
+import {persistor} from "./redux/store"; // Импортируем стили
 
 const AppContent = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
@@ -19,7 +21,7 @@ const AppContent = () => {
     return (
         <div className="container">
             <div className="header">
-                <Header />
+                <Header/>
             </div>
             <div className="mainPage">
                 {isAuthenticated ?
@@ -32,8 +34,7 @@ const AppContent = () => {
                             <Actions/>
                         </div>
                     </div>
-                        : <Auth />}
-
+                    : <Auth/>}
 
 
             </div>
@@ -44,7 +45,9 @@ const AppContent = () => {
 const App = () => {
     return (
         <Provider store={store}>
-            <AppContent />
+            <PersistGate loading={null} persistor={persistor}>
+                <AppContent/>
+            </PersistGate>
         </Provider>
     );
 };
