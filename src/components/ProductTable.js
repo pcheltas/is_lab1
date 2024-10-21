@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
-import {fetchProducts, fetchUnitOfMeasure} from "../redux/productSlice";
+import {deleteProduct, fetchProducts, fetchUnitOfMeasure} from "../redux/productSlice";
 import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
@@ -44,8 +44,9 @@ const ProductTable = () => {
         }
     };
 
-    const handleButtonClick = () => {
-        console.log("bin");
+    const handleButtonClick = (id) => {
+        dispatch(deleteProduct([id, token]))
+        dispatch(fetchProducts([token, requestParams]))
     };
 
     const handleEditClick = (product) => {
@@ -114,7 +115,7 @@ const ProductTable = () => {
                                     <td>
                                         <button onClick={(e) => {
                                             e.stopPropagation();
-                                            handleButtonClick();
+                                            handleButtonClick(product.id);
                                         }}
                                                 className="icon-button">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"

@@ -89,29 +89,78 @@ export const updateProduct = createAsyncThunk('products/updateProduct', async (u
     if (!response.ok) {
         throw new Error('Failed to update product');
     }
-    return await response.json();
+    return await response.data;
 });
 
-export const deleteProduct = createAsyncThunk('products/deleteProduct', async (id, token) => {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-        method: 'DELETE',
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (args) => {
+    const getHeaders = {
         headers: {
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.delete(`${API_URL}/products/${args[0]}`, getHeaders);
+    console.log(response.status)
+    if (response.status !== 204) {
         throw new Error('Failed to delete product');
     }
-    return id; // Возвращаем ID удаленного продукта
+    return await response.data;
 });
+
+export const deleteProductByRating = createAsyncThunk('products/deleteProduct/rating', async (args) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.delete(`${API_URL}/products/rating/${args[0]}`, getHeaders);
+    console.log(response.status)
+    if (response.status !== 204) {
+        throw new Error('Failed to delete product');
+    }
+    return await response.data;
+});
+
+export const sumRating = createAsyncThunk('products/sumRating', async (token) => {
+    console.log(sumRating)
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.get(`${API_URL}/products/rating`, getHeaders);
+    if (response.status !== 200) {
+        throw new Error('Failed to fetch sum rating');
+    }
+    return await response.data;
+});
+
+export const lowerPriceByPercent = createAsyncThunk('products/lowerPrice', async (args) => {
+    console.log("lowering" + args[0] + args[1])
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.put(`${API_URL}/products/price:decrease/${args[0]}`, {}, getHeaders);
+    console.log(response.status)
+    if (response.status !== 200) {
+        throw new Error('Failed to update price');
+    }
+    return await response.data;
+});
+
 
 const productSlice = createSlice({
     name: 'product',
     initialState: {
-        products: [  ],
-        unitOfMeasure: [ ],
-        requestParams: ""
+        products: [],
+        unitOfMeasure: [],
+        requestParams: "",
+        sumRating: ""
     },
     reducers: {
         setRequestParams(state, action) {
@@ -143,8 +192,29 @@ const productSlice = createSlice({
             .addCase(fetchProducts.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
-                console.log(action.payload)
-                console.log(action.error.message)
+            })
+            .addCase(sumRating.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(sumRating.fulfilled, (state, action) => {
+                state.loading = false;
+                state.sumRating = action.payload;
+            })
+            .addCase(sumRating.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(lowerPriceByPercent.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(lowerPriceByPercent.fulfilled, (state, action) => {
+                state.loading = false;
+            })
+            .addCase(lowerPriceByPercent.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             })
             .addCase(addProduct.pending, (state) => {
                 state.loading = true;
@@ -184,9 +254,21 @@ const productSlice = createSlice({
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
+            })
+            .addCase(deleteProductByRating.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteProductByRating.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products = state.products.filter(product => product.id !== action.payload);
+            })
+            .addCase(deleteProductByRating.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
             });
     },
 });
 
-export const { setRequestParams } = productSlice.actions;
+export const {setRequestParams} = productSlice.actions;
 export default productSlice.reducer;
