@@ -137,33 +137,70 @@ const Filters = () => {
 
     const handlePageClick = (event) => {
         setPage(event.selected)
+        const newPage = `page=${event.selected}`;
+
         if (!requestParams.includes('?')) {
-            const newRequest = `?page=${event.selected}`;
-            dispatch(setRequestParams(newRequest))
-            dispatch(fetchProducts([token, newRequest]))
-        }
-        else{
+            const newRequest = `?${newPage}`;
+            dispatch(setRequestParams(newRequest));
+            dispatch(fetchProducts([token, newRequest]));
+        } else {
             const [base, params] = requestParams.split('?');
-            const newParams = `page=${event.selected}&${params}`;
-            const newRequest = `${base}?${newParams}`; // Склеиваем обратно
-            dispatch(setRequestParams(newRequest))
-            dispatch(fetchProducts([token, newRequest]))
+            const paramsArray = params.split('&');
+            let pageUpdated = false;
+
+            const newParams = paramsArray.map(param => {
+                if (param.startsWith('page=')) {
+                    pageUpdated = true;
+                    return newPage;
+                }
+                return param;
+            });
+            if (!pageUpdated) {
+                newParams.push(newPage);
+            }
+
+            const finalParams = newParams.join('&');
+            const newRequest = `${base}?${finalParams}`;
+            dispatch(setRequestParams(newRequest));
+            dispatch(fetchProducts([token, newRequest]));
         }
 
     };
 
     const handleLimitChange = (event) => {
-        setLimit(event.target.value)
+        setLimit(event.target.value);
+        const newLimit = `limit=${event.target.value}`;
+
         if (!requestParams.includes('?')) {
-            const newRequest = `?limit=${event.target.value}`;
-            dispatch(setRequestParams(newRequest))
-            dispatch(fetchProducts([token, newRequest]))
+            const newRequest = `?${newLimit}`;
+            dispatch(setRequestParams(newRequest));
+            dispatch(fetchProducts([token, newRequest]));
+        } else {
+            const [base, params] = requestParams.split('?');
+            console.log("base " + base);
+            console.log("params " + params);
+
+            // Разбиваем параметры на массив
+            const paramsArray = params.split('&');
+            let limitUpdated = false;
+
+            const newParams = paramsArray.map(param => {
+                if (param.startsWith('limit=')) {
+                    limitUpdated = true;
+                    return newLimit;
+                }
+                return param;
+            });
+            if (!limitUpdated) {
+                newParams.push(newLimit);
+            }
+
+            const finalParams = newParams.join('&');
+            const newRequest = `${base}?${finalParams}`;
+            console.log("handleLimit: " + newRequest);
+            dispatch(setRequestParams(newRequest));
+            dispatch(fetchProducts([token, newRequest]));
         }
-        const [base, params] = requestParams.split('?');
-        const newParams = `limit=${event.target.value}&${params}`;
-        const newRequest = `${base}?${newParams}`;
-        dispatch(setRequestParams(newRequest))
-        dispatch(fetchProducts([token, newRequest]))
     };
 
     const handleInputChange = (e) => {
