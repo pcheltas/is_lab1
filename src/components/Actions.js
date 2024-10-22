@@ -73,7 +73,7 @@ const Actions = () => {
                     </div>
                 );
             case 'Рассчитать сумму рейтингов всех продуктов':
-                return sumRat ? <div>{sumRat}</div> : null;
+                return sumRat >= 0 ? <div>{sumRat}</div> : null;
             case 'Снизить цену всей продукции на заданный процент':
                 return (
                     <div>

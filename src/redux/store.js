@@ -13,7 +13,8 @@ import {persistReducer,
     PAUSE,
     PERSIST,
     PURGE,
-    REGISTER,} from "redux-persist"; // по умолчанию использует localStorage
+    REGISTER,} from "redux-persist";
+import addressSlice from "./addressSlice"; // по умолчанию использует localStorage
 
 const persistConfig = {
     key: 'root',
@@ -27,7 +28,8 @@ const rootReducer = combineReducers({
     person: personSlice,
     manufacturer: manufacturerSlice,
     coordinate: coordinateSlice,
-    user: userSlice
+    user: userSlice,
+    address: addressSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

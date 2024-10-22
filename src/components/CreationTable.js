@@ -4,11 +4,15 @@ import {useDispatch, useSelector} from "react-redux";
 import '../error.css'
 import {addProduct} from "../redux/productSlice";
 import '../creationTable.css'
+import {validateProduct} from "./validateProduct";
+import SuggestObject from "./SuggestObjects";
 
 const CreationTable = ({isOpen, onClose}) => {
     const dispatch = useDispatch();
     const token = useSelector(state => state.auth.token);
-
+    const owners = useSelector(state => state.person.persons)
+    const officialAddresses = useSelector(state => state.address.addresses)
+    const manufacturers = useSelector(state => state.manufacturer.manufacturers)
     // const [product, setProduct] = useState({
     //     name: '',
     //     coordinates: {
@@ -98,6 +102,30 @@ const CreationTable = ({isOpen, onClose}) => {
     const country = useSelector(state => state.person.country || [])
     const unitOfMeasure = useSelector(state => state.product.unitOfMeasure)
 
+    const handleChoice = (item, name) => {
+        const updatedProduct = {...product};
+
+        switch (name) {
+            case "manufacturer":
+                updatedProduct.manufacturer = {...item};
+                break;
+            case "manufacturer.officialAddress":
+                updatedProduct.manufacturer.officialAddress = {...item};
+                break;
+            case "owner":
+                updatedProduct.owner = {...item};
+                break;
+            default:
+                return;
+        }
+
+        console.log(name)
+        console.log(JSON.stringify(item))
+        console.log('product: ' + JSON.stringify(product))
+        setProduct(updatedProduct);
+        console.log('updated product: ' + JSON.stringify(updatedProduct))
+    }
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
 
@@ -177,117 +205,7 @@ const CreationTable = ({isOpen, onClose}) => {
 
 
     const validate = () => {
-        const newErrors = {};
-        if (!product.name) {
-            newErrors.name = 'Название не может быть пустым';
-        }
-        if (!product.unitOfMeasure) {
-            newErrors.unitOfMeasure = 'Единица мзмерения не может быть пустой';
-        }
-        if (!product.price) {
-            newErrors.price = 'Стоимость не может быть пустой';
-        } else if (!/^(\d+|\d+\.\d+)$/.test(product.price)) {
-            newErrors.price = 'Стоимость должна быть числом';
-        }
-        if (!product.manufactureCost) {
-            newErrors.manufactureCost = 'Себестоимость не может быть пустой';
-        } else if (!/^(\d+|\d+\.\d+)$/.test(product.manufactureCost)) {
-            newErrors.manufactureCost = 'Себестоимость должна быть числом';
-        }
-        if (!product.rating) {
-            newErrors.rating = 'Рейтинг не может быть пустым';
-        } else if (!/^(10|[0-9](\.[0-9])?)$/.test(product.rating)) {
-            newErrors.rating = 'Рейтинг должен быть числом от 0 до 10';
-        }
-        if (!product.coordinates.x) {
-            newErrors.coordinatesX = 'Координата X не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(product.coordinates.x)) {
-            newErrors.coordinatesX = 'Координата X должна быть числом';
-        }
-        if (!product.coordinates.y) {
-            newErrors.coordinatesY = 'Координата Y не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(product.coordinates.y)) {
-            newErrors.coordinatesY = 'Координата Y должна быть числом';
-        }
-        if (!product.owner.name) {
-            newErrors.ownerName = 'Имя владельца не может быть пустым';
-        }
-        if (!product.owner.eyeColor) {
-            newErrors.ownerEyeColor = 'Цвет глаз не может быть пустым';
-        }
-        if (!product.owner.hairColor) {
-            newErrors.ownerHairColor = 'Цвет волос не может быть пустым';
-        }
-        if (!product.owner.height) {
-            newErrors.ownerHeight = 'Рост не может быть пустым';
-        } else if (!/^\d+(\.\d+)?$/.test(product.owner.height)) {
-            newErrors.ownerHeight = 'Рост должен быть числом';
-        }
-        if (!product.owner.nationality) {
-            newErrors.ownerNationality = 'Национальность не может быть пустой';
-        }
-        if (!product.owner.location.x) {
-            newErrors.ownerLocationX = 'Координата X не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(product.owner.location.x)) {
-            newErrors.ownerLocationX = 'Координата X должна быть числом';
-        }
-        if (!product.owner.location.y) {
-            newErrors.ownerLocationY = 'Координата Y не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(product.owner.location.y)) {
-            newErrors.ownerLocationY = 'Координата Y должна быть числом';
-        }
-        if (!product.owner.location.z) {
-            newErrors.ownerLocationZ = 'Координата Z не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(product.owner.location.z)) {
-            newErrors.ownerLocationZ = 'Координата Z должна быть числом';
-        }
-        if (!product.owner.location.name) {
-            newErrors.ownerLocationName = 'Название не может быть пустым';
-        }
-        if (!product.manufacturer.name) {
-            newErrors.manufacturerName = 'Название производителя не может быть пустым';
-        }
-        if (!product.manufacturer.annualTurnover) {
-            newErrors.annualTurnover = 'Ежегодный оборот не может быть пустым';
-        } else if (!/^\d+(\.\d+)?$/.test(product.manufacturer.annualTurnover)) {
-            newErrors.annualTurnover = 'Ежегодный оборот должен быть числом';
-        }
-        if (!product.manufacturer.employeesCount) {
-            newErrors.employeesCount = 'Количество работников не может быть пустым';
-        } else if (!/^\d+$/.test(product.manufacturer.employeesCount)) {
-            newErrors.employeesCount = 'Количество работников должно быть целым числом';
-        }
-        if (!product.manufacturer.rating) {
-            newErrors.manufacturerRating = 'Рейтинг производителя не может быть пустым';
-        } else if (!/^(10|[0-9](\.[0-9])?)$/.test(product.manufacturer.rating)) {
-            newErrors.manufacturerRating = 'Рейтинг производителя должен быть числом';
-        }
-        if (!product.manufacturer.fullName) {
-            newErrors.fullName = 'Полное название не может быть пустым';
-        }
-        if (!product.manufacturer.officialAddress.zipCode) {
-            newErrors.zipCode = 'Индекс не может быть пустым';
-        }
-        const town = product.manufacturer.officialAddress.town;
-        if (!town.x) {
-            newErrors.townX = 'Координата X города не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(town.x)) {
-            newErrors.townX = 'Координата X города должна быть числом';
-        }
-        if (!town.y) {
-            newErrors.townY = 'Координата Y города не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(town.y)) {
-            newErrors.townY = 'Координата Y города должна быть числом';
-        }
-        if (!town.z) {
-            newErrors.townZ = 'Координата Z города не может быть пустой';
-        } else if (!/^\d+(\.\d+)?$/.test(town.z)) {
-            newErrors.townZ = 'Координата Z города должна быть числом';
-        }
-        if (!town.name) {
-            newErrors.townName = 'Название города не может быть пустым';
-        }
-
+        const newErrors = validateProduct(product)
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0; // Возвращаем true, если нет ошибок
     };
@@ -370,95 +288,103 @@ const CreationTable = ({isOpen, onClose}) => {
                                 </p>
                             </div>
                         </div>
-                        <div className="item-box">
-                            <h2>Владелец</h2>
-                            <p>
-                                <span>Имя</span>
-                                <input name="owner.name"
-                                       value={product.owner.name}
-                                       onChange={handleInputChange}/>
-                                {errors.ownerName && <p className="error-popup">{errors.ownerName}</p>}
-                            </p>
-                            <p>
-                                <span>Цвет глаз</span>
-                                <select name="owner.eyeColor" value={product.owner.eyeColor}
-                                        onChange={handleInputChange}>
-                                    <option value="" disabled={!product.unitOfMeasure} selected={true}>
-                                        Выберите цвет
-                                    </option>
-                                    {color.map((option) => (
-                                        <option key={option} value={option}>{option}</option>
-                                    ))}
-                                </select>
-                                {errors.ownerEyeColor && <p className="error-popup">{errors.ownerEyeColor}</p>}
-                            </p>
-                            <p>
-                                <span>Цвет волос</span>
-                                <select name="owner.hairColor"
-                                        value={product.owner.hairColor}
-                                        onChange={handleInputChange}>
-                                    <option value="" disabled={!product.unitOfMeasure} selected={true}>
-                                        Выберите цвет
-                                    </option>
-                                    {color.map((option) => (
-                                        <option key={option} value={option}>{option}</option>
-                                    ))}
-                                </select>
-                                {errors.ownerHairColor && <p className="error-popup">{errors.ownerHairColor}</p>}
-                            </p>
-                            <p>
-                                <span>Рост</span>
-                                <input name="owner.height"
-                                       value={product.owner.height}
-                                       onChange={handleInputChange}/>
-                                {errors.ownerHeight && <p className="error-popup">{errors.ownerHeight}</p>}
-                            </p>
-                            <p>
-                                <span>Национальность</span>
-                                <select name="owner.nationality"
-                                        value={product.owner.nationality}
-                                        onChange={handleInputChange}>
-                                    <option value="" disabled={!product.unitOfMeasure} selected={true}>
-                                        Выберите национальность
-                                    </option>
-                                    {country.map((option) => (
-                                        <option key={option} value={option}>{option}</option>
-                                    ))}
-                                </select>
-                                {errors.ownerNationality && <p className="error-popup">{errors.ownerNationality}</p>}
-                            </p>
-                            <div className="item-box">
-                                <h2>Город</h2>
+                        <div className="item-box flex-row">
+                            <div>
+                                <h2>Владелец</h2>
                                 <p>
-                                    <span>X</span>
-                                    <input name="owner.location.x"
-                                           value={product.owner.location.x}
+                                    <span>Имя</span>
+                                    <input name="owner.name"
+                                           value={product.owner.name}
                                            onChange={handleInputChange}/>
-                                    {errors.ownerLocationX && <p className="error-popup">{errors.ownerLocationX}</p>}
+                                    {errors.ownerName && <p className="error-popup">{errors.ownerName}</p>}
                                 </p>
                                 <p>
-                                    <span>Y</span>
-                                    <input name="owner.location.y"
-                                           value={product.owner.location.y}
-                                           onChange={handleInputChange}/>
-                                    {errors.ownerLocationY && <p className="error-popup">{errors.ownerLocationY}</p>}
+                                    <span>Цвет глаз</span>
+                                    <select name="owner.eyeColor" value={product.owner.eyeColor}
+                                            onChange={handleInputChange}>
+                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                            Выберите цвет
+                                        </option>
+                                        {color.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                    {errors.ownerEyeColor && <p className="error-popup">{errors.ownerEyeColor}</p>}
                                 </p>
                                 <p>
-                                    <span>Z</span>
-                                    <input name="owner.location.z"
-                                           value={product.owner.location.z}
-                                           onChange={handleInputChange}/>
-                                    {errors.ownerLocationZ && <p className="error-popup">{errors.ownerLocationZ}</p>}
+                                    <span>Цвет волос</span>
+                                    <select name="owner.hairColor"
+                                            value={product.owner.hairColor}
+                                            onChange={handleInputChange}>
+                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                            Выберите цвет
+                                        </option>
+                                        {color.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                    {errors.ownerHairColor && <p className="error-popup">{errors.ownerHairColor}</p>}
                                 </p>
                                 <p>
-                                    <span>Название</span>
-                                    <input name="owner.location.name"
-                                           value={product.owner.location.name}
+                                    <span>Рост</span>
+                                    <input name="owner.height"
+                                           value={product.owner.height}
                                            onChange={handleInputChange}/>
-                                    {errors.ownerLocationName &&
-                                        <p className="error-popup">{errors.ownerLocationName}</p>}
+                                    {errors.ownerHeight && <p className="error-popup">{errors.ownerHeight}</p>}
                                 </p>
+                                <p>
+                                    <span>Национальность</span>
+                                    <select name="owner.nationality"
+                                            value={product.owner.nationality}
+                                            onChange={handleInputChange}>
+                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                            Выберите национальность
+                                        </option>
+                                        {country.map((option) => (
+                                            <option key={option} value={option}>{option}</option>
+                                        ))}
+                                    </select>
+                                    {errors.ownerNationality &&
+                                        <p className="error-popup">{errors.ownerNationality}</p>}
+                                </p>
+                                <div className="item-box">
+                                    <h2>Город</h2>
+                                    <p>
+                                        <span>X</span>
+                                        <input name="owner.location.x"
+                                               value={product.owner.location.x}
+                                               onChange={handleInputChange}/>
+                                        {errors.ownerLocationX &&
+                                            <p className="error-popup">{errors.ownerLocationX}</p>}
+                                    </p>
+                                    <p>
+                                        <span>Y</span>
+                                        <input name="owner.location.y"
+                                               value={product.owner.location.y}
+                                               onChange={handleInputChange}/>
+                                        {errors.ownerLocationY &&
+                                            <p className="error-popup">{errors.ownerLocationY}</p>}
+                                    </p>
+                                    <p>
+                                        <span>Z</span>
+                                        <input name="owner.location.z"
+                                               value={product.owner.location.z}
+                                               onChange={handleInputChange}/>
+                                        {errors.ownerLocationZ &&
+                                            <p className="error-popup">{errors.ownerLocationZ}</p>}
+                                    </p>
+                                    <p>
+                                        <span>Название</span>
+                                        <input name="owner.location.name"
+                                               value={product.owner.location.name}
+                                               onChange={handleInputChange}/>
+                                        {errors.ownerLocationName &&
+                                            <p className="error-popup">{errors.ownerLocationName}</p>}
+                                    </p>
+                                </div>
                             </div>
+                            <SuggestObject mass={owners} name="owner" handleChoice={handleChoice} amountOfLabels={1}
+                                           labelKey="name" />
 
 
                         </div>
@@ -512,6 +438,8 @@ const CreationTable = ({isOpen, onClose}) => {
                                     {errors.zipCode &&
                                         <p className="error-popup">{errors.zipCode}</p>}
                                 </p>
+                                <SuggestObject mass={officialAddresses} name="manufacturer.officialAddress"
+                                               handleChoice={handleChoice} amountOfLabels={1} labelKey="zipCode"/>
                                 <div className="item-box">
                                     <h2>Город</h2>
                                     <p>
@@ -548,6 +476,8 @@ const CreationTable = ({isOpen, onClose}) => {
                                     </p>
                                 </div>
                             </div>
+                            <SuggestObject mass={manufacturers} name="manufacturer" handleChoice={handleChoice}
+                                           amountOfLabels={1} labelKey="name"/>
                         </div>
                     </div>
                 </div>

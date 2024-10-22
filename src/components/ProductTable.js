@@ -8,6 +8,7 @@ import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
 import {fetchUsers} from "../redux/userSlice";
+import {fetchAddresses} from "../redux/addressSlice";
 
 const ProductTable = () => {
     const dispatch = useDispatch();
@@ -31,7 +32,8 @@ const ProductTable = () => {
                 dispatch(fetchManufacturers(token)),
                 dispatch(fetchPersons(token)),
                 dispatch(fetchCoordinates(token)),
-                dispatch(fetchUsers(token))
+                dispatch(fetchUsers(token)),
+                dispatch(fetchAddresses(token))
                 // dispatch(fetchProducts())
             ]);
         };

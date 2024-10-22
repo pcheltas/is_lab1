@@ -1,0 +1,25 @@
+.scrollable-suggestion {
+    width: auto; /* Ширина прямоугольника */
+    height: 200px; /* Высота прямоугольника */
+    overflow-y: auto; /* Включаем вертикальную прокрутку */
+    border: 1px solid #000; /* Граница для прямоугольника */
+    padding: 10px; /* Отступ внутри прямоугольника */
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* Тень для визуального эффекта */
+}
+
+.rectangle-button {
+    display: block; /* Делаем кнопки блочными элементами */
+    margin: 5px 0; /* Отступ между кнопками */
+    padding: 10px; /* Внутренний отступ кнопки */
+    width: 100%; /* Ширина кнопки на 100% */
+    cursor: pointer; /* Указатель курсора */
+    background-color: #007bff; /* Цвет фона кнопки */
+    color: white; /* Цвет текста кнопки */
+    border: none; /* Убираем рамку */
+    border-radius: 5px; /* Закругленные углы */
+    transition: background-color 0.3s; /* Анимация для фона */
+}
+
+.rectangle-button:hover {
+    background-color: #0056b3; /* Цвет фона кнопки при наведении */
+}
