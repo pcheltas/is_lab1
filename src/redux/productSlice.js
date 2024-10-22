@@ -76,20 +76,31 @@ export const addProduct = createAsyncThunk('products/addProduct', async (args) =
     return await response.data;
 });
 
-export const updateProduct = createAsyncThunk('products/updateProduct', async (updatedProduct, token) => {
-    const response = await fetch(`${API_URL}/products/`, {
-        method: 'PUT',
+export const updateProduct = createAsyncThunk('products/updateProduct', async (args) => {
+    const getHeaders = {
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer' + token,
-        },
-        body: JSON.stringify(updatedProduct),
-    });
-
-    if (!response.ok) {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.put(`${API_URL}/products`, args[0], getHeaders);
+    if (response.status !== 201) {
         throw new Error('Failed to update product');
     }
     return await response.data;
+    // const response = await fetch(`${API_URL}/products`, {
+    //     method: 'PUT',
+    //     headers: {
+    //         'Content-Type': 'application/json',
+    //         'Authorization': 'Bearer' + args[1],
+    //     },
+    //     body: JSON.stringify(args[0]),
+    // });
+    //
+    // if (!response.ok) {
+    //     throw new Error('Failed to update product');
+    // }
+    // return await response.data;
 });
 
 export const deleteProduct = createAsyncThunk('products/deleteProduct', async (args) => {

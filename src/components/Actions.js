@@ -24,31 +24,28 @@ const Actions = () => {
     };
 
 
-    const handleApply = () => {
+    const handleApply = async () => {
         // alert(`Применено действие: ${activeAction} с параметрами: ${inputValue || percentage}`);
         switch (activeAction) {
             case 'Удалить один объект с заданным рейтингом':
                 if (inputValue && inputValue.trim() !== '') {
-                    dispatch(deleteProductByRating([inputValue, token]));
-                    dispatch(fetchProducts([token, requestParams]))
+                    await dispatch(deleteProductByRating([inputValue, token]))                    ;
+                    await dispatch(fetchProducts([token, requestParams]))
                 }
                 break;
             // case 'Рассчитать сумму рейтингов всех продуктов':
             case 'Рассчитать сумму рейтингов всех продуктов':
                 dispatch(sumRating(token))
-                dispatch(fetchProducts([token, requestParams]))
                 break;
             case 'Снизить цену всей продукции на заданный процент':
                 if (!isNaN(percentage) && percentage >= 0) {
-                    dispatch(lowerPriceByPercent([percentage, token]));
-                    dispatch(fetchProducts([token, requestParams]))
+                    await dispatch(lowerPriceByPercent([percentage, token]));
+                    await dispatch(fetchProducts([token, requestParams]))
                 }
                 break;
             case 'Показать все продукты с заданной подстрокой':
                 if (subString && subString.trim() !== '') {
-
                     dispatch(fetchBySubstring([subString, token]));
-                    // dispatch(fetchProducts([token, requestParams]))
                 }
                 break;
             default:

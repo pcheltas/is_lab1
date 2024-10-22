@@ -238,7 +238,7 @@ const CreationTable = ({isOpen, onClose}) => {
                                     value={product.unitOfMeasure}
                                     onChange={handleInputChange}
                                 >
-                                    <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                    <option value="" disabled={product.unitOfMeasure} selected={true}>
                                         Выберите единицу измерения
                                     </option>
                                     {unitOfMeasure.map((option) => (
@@ -302,7 +302,7 @@ const CreationTable = ({isOpen, onClose}) => {
                                     <span>Цвет глаз</span>
                                     <select name="owner.eyeColor" value={product.owner.eyeColor}
                                             onChange={handleInputChange}>
-                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                        <option value="" disabled={product.owner.eyeColor} selected={true}>
                                             Выберите цвет
                                         </option>
                                         {color.map((option) => (
@@ -316,7 +316,7 @@ const CreationTable = ({isOpen, onClose}) => {
                                     <select name="owner.hairColor"
                                             value={product.owner.hairColor}
                                             onChange={handleInputChange}>
-                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                        <option value="" disabled={product.owner.hairColor} selected={true}>
                                             Выберите цвет
                                         </option>
                                         {color.map((option) => (
@@ -337,7 +337,7 @@ const CreationTable = ({isOpen, onClose}) => {
                                     <select name="owner.nationality"
                                             value={product.owner.nationality}
                                             onChange={handleInputChange}>
-                                        <option value="" disabled={!product.unitOfMeasure} selected={true}>
+                                        <option value="" disabled={product.owner.nationality} selected={true}>
                                             Выберите национальность
                                         </option>
                                         {country.map((option) => (
@@ -384,96 +384,102 @@ const CreationTable = ({isOpen, onClose}) => {
                                 </div>
                             </div>
                             <SuggestObject mass={owners} name="owner" handleChoice={handleChoice} amountOfLabels={1}
-                                           labelKey="name" />
+                                           labelKey="name"/>
 
 
                         </div>
 
-                        <div className="item-box">
-                            <h2>Производитель</h2>
-                            <p>
-                                <span>Название</span>
-                                <input name="manufacturer.name"
-                                       value={product.manufacturer.name}
-                                       onChange={handleInputChange}/>
-                                {errors.manufacturerName && <p className="error-popup">{errors.manufacturerName}</p>}
-                            </p>
-                            <p>
-                                <span>Ежегодный оборот</span>
-                                <input name="manufacturer.annualTurnover"
-                                       value={product.manufacturer.annualTurnover}
-                                       onChange={handleInputChange}/>
-                                {errors.annualTurnover && <p className="error-popup">{errors.annualTurnover}</p>}
-                            </p>
-                            <p>
-                                <span>Количество работников</span>
-                                <input name="manufacturer.employeesCount"
-                                       value={product.manufacturer.employeesCount}
-                                       onChange={handleInputChange}/>
-                                {errors.employeesCount && <p className="error-popup">{errors.employeesCount}</p>}
-                            </p>
-                            <p>
-                                <span>Полное название</span>
-                                <input name="manufacturer.fullName"
-                                       value={product.manufacturer.fullName}
-                                       onChange={handleInputChange}/>
-                                {errors.fullName && <p className="error-popup">{errors.fullName}</p>}
-                            </p>
-                            <p>
-                                <span>Рейтинг</span>
-                                <input name="manufacturer.rating"
-                                       value={product.manufacturer.rating}
-                                       onChange={handleInputChange}/>
-                                {errors.manufacturerRating &&
-                                    <p className="error-popup">{errors.manufacturerRating}</p>}
-                            </p>
-
-                            <div className="item-box">
-                                <h2>Официальный адрес </h2>
+                        <div className="item-box flex-row">
+                            <div>
+                                <h2>Производитель</h2>
                                 <p>
-                                    <span>Индекс</span>
-                                    <input name="manufacturer.officialAddress.zipCode"
-                                           value={product.manufacturer.officialAddress.zipCode}
+                                    <span>Название</span>
+                                    <input name="manufacturer.name"
+                                           value={product.manufacturer.name}
                                            onChange={handleInputChange}/>
-                                    {errors.zipCode &&
-                                        <p className="error-popup">{errors.zipCode}</p>}
+                                    {errors.manufacturerName &&
+                                        <p className="error-popup">{errors.manufacturerName}</p>}
                                 </p>
-                                <SuggestObject mass={officialAddresses} name="manufacturer.officialAddress"
-                                               handleChoice={handleChoice} amountOfLabels={1} labelKey="zipCode"/>
-                                <div className="item-box">
-                                    <h2>Город</h2>
-                                    <p>
-                                        <span>X</span>
-                                        <input name="manufacturer.officialAddress.town.x"
-                                               value={product.manufacturer.officialAddress.town.x}
-                                               onChange={handleInputChange}/>
-                                        {errors.townX &&
-                                            <p className="error-popup">{errors.townX}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Y</span>
-                                        <input name="manufacturer.officialAddress.town.y"
-                                               value={product.manufacturer.officialAddress.town.y}
-                                               onChange={handleInputChange}/>
-                                        {errors.townY &&
-                                            <p className="error-popup">{errors.townY}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Z</span>
-                                        <input name="manufacturer.officialAddress.town.z"
-                                               value={product.manufacturer.officialAddress.town.z}
-                                               onChange={handleInputChange}/>
-                                        {errors.townZ &&
-                                            <p className="error-popup">{errors.townZ}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Название</span>
-                                        <input name="manufacturer.officialAddress.town.name"
-                                               value={product.manufacturer.officialAddress.town.name}
-                                               onChange={handleInputChange}/>
-                                        {errors.townName &&
-                                            <p className="error-popup">{errors.townName}</p>}
-                                    </p>
+                                <p>
+                                    <span>Ежегодный оборот</span>
+                                    <input name="manufacturer.annualTurnover"
+                                           value={product.manufacturer.annualTurnover}
+                                           onChange={handleInputChange}/>
+                                    {errors.annualTurnover && <p className="error-popup">{errors.annualTurnover}</p>}
+                                </p>
+                                <p>
+                                    <span>Количество работников</span>
+                                    <input name="manufacturer.employeesCount"
+                                           value={product.manufacturer.employeesCount}
+                                           onChange={handleInputChange}/>
+                                    {errors.employeesCount && <p className="error-popup">{errors.employeesCount}</p>}
+                                </p>
+                                <p>
+                                    <span>Полное название</span>
+                                    <input name="manufacturer.fullName"
+                                           value={product.manufacturer.fullName}
+                                           onChange={handleInputChange}/>
+                                    {errors.fullName && <p className="error-popup">{errors.fullName}</p>}
+                                </p>
+                                <p>
+                                    <span>Рейтинг</span>
+                                    <input name="manufacturer.rating"
+                                           value={product.manufacturer.rating}
+                                           onChange={handleInputChange}/>
+                                    {errors.manufacturerRating &&
+                                        <p className="error-popup">{errors.manufacturerRating}</p>}
+                                </p>
+
+                                <div className="item-box flex-row">
+                                    <div>
+                                        <h2>Официальный адрес </h2>
+                                        <p>
+                                            <span>Индекс</span>
+                                            <input name="manufacturer.officialAddress.zipCode"
+                                                   value={product.manufacturer.officialAddress.zipCode}
+                                                   onChange={handleInputChange}/>
+                                            {errors.zipCode &&
+                                                <p className="error-popup">{errors.zipCode}</p>}
+                                        </p>
+                                        <div className="item-box">
+                                            <h2>Город</h2>
+                                            <p>
+                                                <span>X</span>
+                                                <input name="manufacturer.officialAddress.town.x"
+                                                       value={product.manufacturer.officialAddress.town.x}
+                                                       onChange={handleInputChange}/>
+                                                {errors.townX &&
+                                                    <p className="error-popup">{errors.townX}</p>}
+                                            </p>
+                                            <p>
+                                                <span>Y</span>
+                                                <input name="manufacturer.officialAddress.town.y"
+                                                       value={product.manufacturer.officialAddress.town.y}
+                                                       onChange={handleInputChange}/>
+                                                {errors.townY &&
+                                                    <p className="error-popup">{errors.townY}</p>}
+                                            </p>
+                                            <p>
+                                                <span>Z</span>
+                                                <input name="manufacturer.officialAddress.town.z"
+                                                       value={product.manufacturer.officialAddress.town.z}
+                                                       onChange={handleInputChange}/>
+                                                {errors.townZ &&
+                                                    <p className="error-popup">{errors.townZ}</p>}
+                                            </p>
+                                            <p>
+                                                <span>Название</span>
+                                                <input name="manufacturer.officialAddress.town.name"
+                                                       value={product.manufacturer.officialAddress.town.name}
+                                                       onChange={handleInputChange}/>
+                                                {errors.townName &&
+                                                    <p className="error-popup">{errors.townName}</p>}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <SuggestObject mass={officialAddresses} name="manufacturer.officialAddress"
+                                                   handleChoice={handleChoice} amountOfLabels={1}
+                                                   labelKey="zipCode"/>
                                 </div>
                             </div>
                             <SuggestObject mass={manufacturers} name="manufacturer" handleChoice={handleChoice}

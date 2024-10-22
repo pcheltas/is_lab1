@@ -3,12 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteProduct, fetchProducts, fetchUnitOfMeasure} from "../redux/productSlice";
+import {deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
 import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
 import {fetchUsers} from "../redux/userSlice";
 import {fetchAddresses} from "../redux/addressSlice";
+import SuggestObject from "./SuggestObjects";
 
 const ProductTable = () => {
     const dispatch = useDispatch();
@@ -18,10 +19,14 @@ const ProductTable = () => {
     const color = useSelector(state => state.person.color || [])
     const country = useSelector(state => state.person.country || [])
     const unitOfMeasure = useSelector(state => state.product.unitOfMeasure)
+    const owners = useSelector(state => state.person.persons)
+    const officialAddresses = useSelector(state => state.address.addresses)
+    const manufacturers = useSelector(state => state.manufacturer.manufacturers)
     const [selectedProductId, setSelectedProductId] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editProduct, setEditProduct] = useState({});
     const [loading, setLoading] = useState(true);
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         const loadData = async () => {
@@ -56,13 +61,91 @@ const ProductTable = () => {
         setEditProduct(product);
     };
 
+    const handleChoice = () => {
+
+    }
+
     const handleInputChange = (e) => {
         const {name, value} = e.target;
-        setEditProduct(prev => ({...prev, [name]: value}));
+
+        if (name.startsWith('coordinates.')) {
+            const coordKey = name.split('.')[1];
+            setEditProduct(prev => ({
+                ...prev,
+                coordinates: {
+                    ...prev.coordinates,
+                    [coordKey]: value
+                }
+            }));
+        } else if (name.startsWith('manufacturer.officialAddress.town.')) {
+            const townKey = name.split('.')[3];
+            setEditProduct(prev => ({
+                ...prev,
+                manufacturer: {
+                    ...prev.manufacturer,
+                    officialAddress: {
+                        ...prev.manufacturer.officialAddress,
+                        town: {
+                            ...prev.manufacturer.officialAddress.town,
+                            [townKey]: value
+                        }
+                    }
+                }
+            }));
+        } else if (name.startsWith('manufacturer.officialAddress.')) {
+            const index = name.split('.')[2];
+            setEditProduct(prev => ({
+                ...prev,
+                manufacturer: {
+                    ...prev.manufacturer,
+                    officialAddress: {
+                        ...prev.manufacturer.officialAddress,
+                        [index]: value
+                    }
+                }
+            }));
+        } else if (name.startsWith('manufacturer.')) {
+            const field = name.split('.')[1];
+            setEditProduct(prev => ({
+                ...prev,
+                manufacturer: {
+                    ...prev.manufacturer,
+                    [field]: value
+                }
+            }));
+        } else if (name.startsWith('owner.location.')) {
+            const locationKey = name.split('.')[2];
+            setEditProduct(prev => ({
+                ...prev,
+                owner: {
+                    ...prev.owner,
+                    location: {
+                        ...prev.owner.location,
+                        [locationKey]: value
+                    }
+                }
+            }));
+        } else if (name.startsWith('owner.')) {
+            const personKey = name.split('.')[1];
+            setEditProduct(prev => ({
+                ...prev,
+                owner: {
+                    ...prev.owner,
+                    [personKey]: value
+                }
+            }));
+        } else {
+            setEditProduct(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
     };
 
-    const handleConfirmClick = () => {
+    const handleConfirmClick = async () => {
         console.log('Updating product', JSON.stringify(editProduct));
+        await dispatch(updateProduct([editProduct, token]))
+        await dispatch(fetchProducts([token, requestParams]))
         setIsEditing(false);
     };
 
@@ -101,253 +184,492 @@ const ProductTable = () => {
                 <tbody>
                 {products.length > 0 ? (
                     products.map(product => (
-                            <React.Fragment key={product.id}>
-                                <tr className="productTableBody" onClick={() => handleRowClick(product.id)}>
-                                    <td>{product.id}</td>
-                                    <td>{product.name}</td>
-                                    <td>{`(${product.coordinates.x}, ${product.coordinates.y})`}</td>
-                                    <td>{product.creationDate}</td>
-                                    <td>{product.unitOfMeasure}</td>
-                                    <td>{product.manufacturer.name}</td>
-                                    <td>{product.price}</td>
-                                    <td>{product.manufactureCost}</td>
-                                    <td>{product.rating}</td>
-                                    <td>{product.owner.name}</td>
-                                    <td>{product.user.login}</td>
-                                    <td>
-                                        <button onClick={(e) => {
-                                            e.stopPropagation();
-                                            handleButtonClick(product.id);
-                                        }}
-                                                className="icon-button">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                                                 className="bi bi-trash-fill" viewBox="0 0 16 16">
-                                                <path
-                                                    d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0
+                        <React.Fragment key={product.id}>
+                            <tr className="productTableBody" onClick={() => handleRowClick(product.id)}>
+                                <td>{product.id}</td>
+                                <td>{product.name}</td>
+                                <td>{`(${product.coordinates.x}, ${product.coordinates.y})`}</td>
+                                <td>{product.creationDate}</td>
+                                <td>{product.unitOfMeasure}</td>
+                                <td>{product.manufacturer.name}</td>
+                                <td>{product.price}</td>
+                                <td>{product.manufactureCost}</td>
+                                <td>{product.rating}</td>
+                                <td>{product.owner.name}</td>
+                                <td>{product.user.login}</td>
+                                <td>
+                                    <button onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleButtonClick(product.id);
+                                    }}
+                                            className="icon-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                             fill="currentColor"
+                                             className="bi bi-trash-fill" viewBox="0 0 16 16">
+                                            <path
+                                                d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0
                                             2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3
                                             4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1
                                             .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0
                                             1 1 0"/>
-                                            </svg>
-                                        </button>
-                                    </td>
-                                </tr>
-                                {selectedProductId === product.id && (
-                                    <tr>
-                                        <td colSpan="11">
-                                            <div>
-                                                <h4>Детальная информация о продукте</h4>
-                                                {!isEditing ? (
-                                                        <div className="border p-3 mt-3">
-                                                            <p><strong>ID:</strong> {product.id}</p>
-                                                            <p><strong>Название:</strong> {product.name}</p>
-
-                                                            <p><strong>Координаты:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>X: {product.coordinates.x}</p>
-                                                            <p style={{marginLeft: '20px'}}>Y: {product.coordinates.y}</p>
-
-                                                            <p><strong>Дата создания:</strong> {product.creationDate}</p>
-
-                                                            <p><strong>Единица измерения:</strong> {product.unitOfMeasure}</p>
-
-                                                            <p><strong>Производитель:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>ID: {product.manufacturer.id}</p>
-                                                            <p style={{marginLeft: '20px'}}>Название: {product.manufacturer.name}</p>
-                                                            <p style={{marginLeft: '20px'}}><strong>Официальный адрес:</strong></p>
-                                                            <p style={{marginLeft: '40px'}}>Индекс: {product.manufacturer.officialAddress.zipcode}
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            {selectedProductId === product.id && (
+                                <tr>
+                                    <td colSpan="12">
+                                        <h4>Детальная информация о продукте</h4>
+                                        {!isEditing ? (<div>
+                                            <div className="creation-box max-width">
+                                                <div className="item-box flex-row">
+                                                    <div>
+                                                        <span>Название</span>
+                                                        <p>{product.name}</p>
+                                                        <p>
+                                                            <span>Единица измерения</span>
+                                                            <p> {product.unitOfMeasure}</p>
+                                                        </p>
+                                                        <p>
+                                                            <span>Стоимость</span>
+                                                            <p>{product.price}</p>
+                                                        </p>
+                                                        <p>
+                                                            <span>Себестоимость</span>
+                                                            <p>{product.manufactureCost}</p>
+                                                        </p>
+                                                        <p>
+                                                            <span>Рейтинг</span>
+                                                            <p>{product.rating}</p>
+                                                        </p>
+                                                        <div className="item-box">
+                                                            <h2>Координаты</h2>
+                                                            <p>
+                                                                <span>X</span>
+                                                                <p>{product.coordinates.x}</p>
                                                             </p>
-                                                            <p style={{marginLeft: '40px'}}><strong>Город:</strong></p>
-                                                            <p style={{marginLeft: '60px'}}>X: {product.manufacturer.officialAddress.town.x}
+                                                            <p>
+                                                                <span>Y</span>
+                                                                <p>{product.coordinates.y}</p>
                                                             </p>
-                                                            <p style={{marginLeft: '60px'}}>Y: {product.manufacturer.officialAddress.town.y}
-                                                            </p>
-                                                            <p style={{marginLeft: '60px'}}>Z: {product.manufacturer.officialAddress.town.z}
-                                                            </p>
-                                                            <p style={{marginLeft: '60px'}}>Название: {product.manufacturer.officialAddress.town.name}
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}>Ежегодный оборот: {product.manufacturer.annualTurnover}</p>
-                                                            <p style={{marginLeft: '20px'}}>Количество сотрудников: {product.manufacturer.employeesCount}</p>
-                                                            <p style={{marginLeft: '20px'}}>Полное название: {product.manufacturer.fullName}</p>
-                                                            <p style={{marginLeft: '20px'}}>Рейтинг: {product.manufacturer.rating}</p>
-
-                                                            <p><strong>Цена:</strong> {product.price}</p>
-                                                            <p><strong>Себестоимость:</strong> {product.manufactureCost}</p>
-                                                            <p><strong>Рейтинг:</strong> {product.rating}</p>
-
-                                                            <p><strong>Владелец:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>Имя: {product.owner.name}</p>
-                                                            <p style={{marginLeft: '20px'}}>Цвет глаз: {product.owner.eyeColor}</p>
-                                                            <p style={{marginLeft: '20px'}}>Цвет волос: {product.owner.hairColor}</p>
-                                                            <p style={{marginLeft: '20px'}}><strong>Город:</strong></p>
-                                                            <p style={{marginLeft: '40px'}}>X: {product.owner.location.x}</p>
-                                                            <p style={{marginLeft: '40px'}}>Y: {product.owner.location.y}</p>
-                                                            <p style={{marginLeft: '40px'}}>Z: {product.owner.location.z}</p>
-                                                            <p style={{marginLeft: '40px'}}>Название: {product.owner.location.name}</p>
-                                                            <p style={{marginLeft: '20px'}}>
-                                                                <strong>Рост:</strong> {product.owner.height}</p>
-                                                            <p style={{marginLeft: '20px'}}>
-                                                                <strong>Национальность:</strong> {product.owner.nationality}</p>
-                                                            <button className="btn btn-primary"
-                                                                    onClick={() => handleEditClick(product)}>Изменить
-                                                            </button>
                                                         </div>
-                                                    )
-                                                    : (
-                                                        <div className="border p-3 mt-3">
-                                                            <p><strong>ID:</strong> {product.id}</p>
-                                                            <p><strong>Название:</strong>
-                                                                <input className="form-control" name="name" value={editProduct.name}
-                                                                       onChange={handleInputChange}/>
+                                                    </div>
+                                                    <div className="item-box flex-row">
+                                                        <div>
+                                                            <h2>Владелец</h2>
+                                                            <p>
+                                                                <span>Имя</span>
+                                                                <p>{product.owner.name}</p>
                                                             </p>
-                                                            <p><strong>Координаты:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>X:
-                                                                <input name="coordinates.x" value={editProduct.coordinates.x}
-                                                                       onChange={handleInputChange}/>
+                                                            <p>
+                                                                <span>Цвет глаз</span>
+                                                                <p>{product.owner.eyeColor}</p>
                                                             </p>
-                                                            <p style={{marginLeft: '20px'}}>Y:
-                                                                <input name="coordinates.y" value={editProduct.coordinates.y}
-                                                                       onChange={handleInputChange}/>
+                                                            <p>
+                                                                <span>Цвет волос</span>
+                                                                <p>{product.owner.hairColor}</p>
                                                             </p>
-                                                            <p><strong>Дата создания:</strong>
-                                                                {product.creationDate}
+                                                            <p>
+                                                                <span>Рост</span>
+                                                                <p>{product.owner.height}</p>
                                                             </p>
-                                                            <p><strong>Единица измерения:</strong>
-                                                                <select name="unitOfMeasure" value={editProduct.unitOfMeasure}
-                                                                        onChange={handleInputChange}>
+                                                            <p>
+                                                                <span>Национальность</span>
+                                                                <p>{product.owner.nationality}</p>
+                                                            </p>
+                                                            <div className="item-box">
+                                                                <h2>Город</h2>
+                                                                <p>
+                                                                    <span>X</span>
+                                                                    <p>{product.owner.location.x}</p>
+                                                                </p>
+                                                                <p>
+                                                                    <span>Y</span>
+                                                                    <p>{product.owner.location.y}</p>
+                                                                </p>
+                                                                <p>
+                                                                    <span>Z</span>
+                                                                    <p>{product.owner.location.z}</p>
+                                                                </p>
+                                                                <p>
+                                                                    <span>Название</span>
+                                                                    <p>{product.owner.location.name}</p>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="item-box flex-row">
+                                                        <div>
+                                                            <h2>Производитель</h2>
+                                                            <p>
+                                                                <span>Название</span>
+                                                                <p>{product.manufacturer.name}</p>
+                                                            </p>
+                                                            <p>
+                                                                <span>Ежегодный оборот</span>
+                                                                <p>{product.manufacturer.annualTurnover}</p>
+                                                            </p>
+                                                            <p>
+                                                                <span>Количество работников</span>
+                                                                <p>{product.manufacturer.employeesCount}</p>
+                                                            </p>
+                                                            <p>
+                                                                <span>Полное название</span>
+                                                                <p>{product.manufacturer.fullName}</p>
+                                                            </p>
+                                                            <p>
+                                                                <span>Рейтинг</span>
+                                                                <p>{product.manufacturer.rating}</p>
+                                                            </p>
+
+                                                            <div className="item-box flex-row">
+                                                                <div>
+                                                                    <h2>Официальный адрес </h2>
+                                                                    <p>
+                                                                        <span>Индекс</span>
+                                                                        <p>{product.manufacturer.officialAddress.zipCode}</p>
+                                                                    </p>
+                                                                    <div className="item-box">
+                                                                        <h2>Город</h2>
+                                                                        <p>
+                                                                            <span>X</span>
+                                                                            <p>{product.manufacturer.officialAddress.town.x}</p>
+                                                                        </p>
+                                                                        <p>
+                                                                            <span>Y</span>
+                                                                            <p>{product.manufacturer.officialAddress.town.y}</p>
+                                                                        </p>
+                                                                        <p>
+                                                                            <span>Z</span>
+                                                                            <p>{product.manufacturer.officialAddress.town.z}</p>
+                                                                        </p>
+                                                                        <p>
+                                                                            <span>Название</span>
+                                                                            <p>{product.manufacturer.officialAddress.town.name}</p>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button className="btn btn-primary"
+                                                    onClick={() => handleEditClick(product)}>Изменить
+                                            </button>
+                                        </div>) : (
+                                            <div>
+                                                <div className="creation-box">
+                                                    <div className="item-box flex-row">
+                                                        <div>
+                                                            <span>Название</span>
+                                                            <input name="name" value={editProduct.name}
+                                                                   onChange={handleInputChange}/>
+                                                            {errors.name &&
+                                                                <p className="error-popup">{errors.name}</p>}
+                                                            <p>
+                                                                <span>Единица измерения</span>
+                                                                <select
+                                                                    name="unitOfMeasure"
+                                                                    value={editProduct.unitOfMeasure}
+                                                                    onChange={handleInputChange}
+                                                                >
+                                                                    <option value=""
+                                                                            disabled={editProduct.unitOfMeasure}
+                                                                            selected={true}>
+                                                                        Выберите единицу измерения
+                                                                    </option>
                                                                     {unitOfMeasure.map((option) => (
-                                                                        <option key={option} value={option}>{option}</option>
+                                                                        <option key={option} value={option}>
+                                                                            {option}
+                                                                        </option>
                                                                     ))}
                                                                 </select>
+                                                                {errors.unitOfMeasure &&
+                                                                    <p className="error-popup">{errors.unitOfMeasure}</p>}
                                                             </p>
-                                                            <p><strong>Производитель:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>id:
-                                                                <input name="manufacturer.id"
-                                                                       value={editProduct.manufacturer.id}
+                                                            <p>
+                                                                <span>Стоимость</span>
+                                                                <input name="price"
+                                                                       value={editProduct.price}
                                                                        onChange={handleInputChange}/>
+                                                                {errors.price &&
+                                                                    <p className="error-popup">{errors.price}</p>}
                                                             </p>
-                                                            <p style={{marginLeft: '20px'}}>Название:
-                                                                <input name="manufacturer.name"
-                                                                       value={editProduct.manufacturer.name}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}><strong>Официальный адрес: </strong>
-                                                            </p>
-                                                            <p style={{marginLeft: '40px'}}>Индекс:
-                                                                <input name="manufacturer.officialAddress.zipcode"
-                                                                       value={editProduct.manufacturer.officialAddress.zipcode}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '40px'}}><strong>Город: </strong></p>
-                                                            <p style={{marginLeft: '60px'}}>X
-                                                                <input name="manufacturer.officialAddress.town.x"
-                                                                       value={editProduct.manufacturer.officialAddress.town.x}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '60px'}}>Y
-                                                                <input name="manufacturer.officialAddress.town.y"
-                                                                       value={editProduct.manufacturer.officialAddress.town.y}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '60px'}}>Z
-                                                                <input name="manufacturer.officialAddress.town.z"
-                                                                       value={editProduct.manufacturer.officialAddress.town.z}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '60px'}}>Название:
-                                                                <input name="manufacturer.officialAddress.town.name"
-                                                                       value={editProduct.manufacturer.officialAddress.town.name}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}>Ежегодный оборот:
-                                                                <input name="manufacturer.annualTurnover"
-                                                                       value={editProduct.manufacturer.annualTurnover}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}>Количество работников:
-                                                                <input name="manufacturer.employeesCount"
-                                                                       value={editProduct.manufacturer.employeesCount}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}>Полное название:
-                                                                <input name="manufacturer.fullName"
-                                                                       value={editProduct.manufacturer.fullName}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}>Рейтинг:
-                                                                <input name="manufacturer.rating"
-                                                                       value={editProduct.manufacturer.rating}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p><strong>Стоимость:</strong>
-                                                                <input name="price" value={editProduct.price}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p><strong>Себестоимость:</strong>
+                                                            <p>
+                                                                <span>Себестоимость</span>
                                                                 <input name="manufactureCost"
                                                                        value={editProduct.manufactureCost}
                                                                        onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p><strong>Рейтинг:</strong>
-                                                                <input name="rating" value={editProduct.rating}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p><strong>Владелец:</strong></p>
-                                                            <p style={{marginLeft: '20px'}}>Имя:
-                                                                <input name="owner.name"
-                                                                       value={editProduct.owner.name}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}> Цвет глаз:
-                                                                <select name="owner.eyeColor" value={editProduct.owner.eyeColor}
-                                                                        onChange={handleInputChange}>
-                                                                    {color.map((option) => (
-                                                                        <option key={option} value={option}>{option}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}> Цвет волос:
-                                                                <select name="owner.hairColor"
-                                                                        value={editProduct.owner.hairColor}
-                                                                        onChange={handleInputChange}>
-                                                                    {color.map((option) => (
-                                                                        <option key={option} value={option}>{option}</option>
-                                                                    ))}
-                                                                </select>
-                                                            </p>
-                                                            <p style={{marginLeft: '20px'}}><strong>Город: </strong></p>
-                                                            <p style={{marginLeft: '40px'}}>X
-                                                                <input name="manufacturer.officialAddress.town.x"
-                                                                       value={editProduct.manufacturer.officialAddress.town.x}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '40px'}}>Y
-                                                                <input name="manufacturer.officialAddress.town.y"
-                                                                       value={editProduct.manufacturer.officialAddress.town.y}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '40px'}}>Z
-                                                                <input name="manufacturer.officialAddress.town.z"
-                                                                       value={editProduct.manufacturer.officialAddress.town.z}
-                                                                       onChange={handleInputChange}/>
-                                                            </p>
-                                                            <p style={{marginLeft: '40px'}}>Название:
-                                                                <input name="manufacturer.officialAddress.town.name"
-                                                                       value={editProduct.manufacturer.officialAddress.town.name}
-                                                                       onChange={handleInputChange}/>
+                                                                {errors.manufactureCost &&
+                                                                    <p className="error-popup">{errors.manufactureCost}</p>}
                                                             </p>
                                                             <p>
-                                                                <button className="btn btn-success"
-                                                                        onClick={handleConfirmClick}>Подтвердить
-                                                                </button>
+                                                                <span>Рейтинг</span>
+                                                                <input name="rating"
+                                                                       value={editProduct.rating}
+                                                                       onChange={handleInputChange}/>
+                                                                {errors.rating &&
+                                                                    <p className="error-popup">{errors.rating}</p>}
                                                             </p>
+
+
+                                                            <div className="item-box">
+                                                                <h2>Координаты</h2>
+                                                                <p>
+                                                                    <span>X</span>
+                                                                    <input name="coordinates.x"
+                                                                           value={editProduct.coordinates.x}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.coordinatesX &&
+                                                                        <p className="error-popup">{errors.coordinatesX}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Y</span>
+                                                                    <input name="coordinates.y"
+                                                                           value={editProduct.coordinates.y}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.coordinatesY &&
+                                                                        <p className="error-popup">{errors.coordinatesY}</p>}
+                                                                </p>
+                                                            </div>
                                                         </div>
-                                                    )}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                )}
-                            </React.Fragment>
-                        ))
+                                                        <div className="item-box flex-row">
+                                                            <div>
+                                                                <h2>Владелец</h2>
+                                                                <p>
+                                                                    <span>Имя</span>
+                                                                    <input name="owner.name"
+                                                                           value={editProduct.owner.name}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.ownerName &&
+                                                                        <p className="error-popup">{errors.ownerName}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Цвет глаз</span>
+                                                                    <select name="owner.eyeColor"
+                                                                            value={editProduct.owner.eyeColor}
+                                                                            onChange={handleInputChange}>
+                                                                        <option value=""
+                                                                                disabled={editProduct.owner.eyeColor}
+                                                                                selected={true}>
+                                                                            Выберите цвет
+                                                                        </option>
+                                                                        {color.map((option) => (
+                                                                            <option key={option}
+                                                                                    value={option}>{option}</option>
+                                                                        ))}
+                                                                    </select>
+                                                                    {errors.ownerEyeColor &&
+                                                                        <p className="error-popup">{errors.ownerEyeColor}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Цвет волос</span>
+                                                                    <select name="owner.hairColor"
+                                                                            value={editProduct.owner.hairColor}
+                                                                            onChange={handleInputChange}>
+                                                                        <option value=""
+                                                                                disabled={editProduct.owner.hairColor}
+                                                                                selected={true}>
+                                                                            Выберите цвет
+                                                                        </option>
+                                                                        {color.map((option) => (
+                                                                            <option key={option}
+                                                                                    value={option}>{option}</option>
+                                                                        ))}
+                                                                    </select>
+                                                                    {errors.ownerHairColor &&
+                                                                        <p className="error-popup">{errors.ownerHairColor}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Рост</span>
+                                                                    <input name="owner.height"
+                                                                           value={editProduct.owner.height}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.ownerHeight &&
+                                                                        <p className="error-popup">{errors.ownerHeight}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Национальность</span>
+                                                                    <select name="owner.nationality"
+                                                                            value={editProduct.owner.nationality}
+                                                                            onChange={handleInputChange}>
+                                                                        <option value=""
+                                                                                disabled={editProduct.owner.nationality}
+                                                                                selected={true}>
+                                                                            Выберите национальность
+                                                                        </option>
+                                                                        {country.map((option) => (
+                                                                            <option key={option}
+                                                                                    value={option}>{option}</option>
+                                                                        ))}
+                                                                    </select>
+                                                                    {errors.ownerNationality &&
+                                                                        <p className="error-popup">{errors.ownerNationality}</p>}
+                                                                </p>
+                                                                <div className="item-box">
+                                                                    <h2>Город</h2>
+                                                                    <p>
+                                                                        <span>X</span>
+                                                                        <input name="owner.location.x"
+                                                                               value={editProduct.owner.location.x}
+                                                                               onChange={handleInputChange}/>
+                                                                        {errors.ownerLocationX &&
+                                                                            <p className="error-popup">{errors.ownerLocationX}</p>}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span>Y</span>
+                                                                        <input name="owner.location.y"
+                                                                               value={editProduct.owner.location.y}
+                                                                               onChange={handleInputChange}/>
+                                                                        {errors.ownerLocationY &&
+                                                                            <p className="error-popup">{errors.ownerLocationY}</p>}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span>Z</span>
+                                                                        <input name="owner.location.z"
+                                                                               value={editProduct.owner.location.z}
+                                                                               onChange={handleInputChange}/>
+                                                                        {errors.ownerLocationZ &&
+                                                                            <p className="error-popup">{errors.ownerLocationZ}</p>}
+                                                                    </p>
+                                                                    <p>
+                                                                        <span>Название</span>
+                                                                        <input name="owner.location.name"
+                                                                               value={editProduct.owner.location.name}
+                                                                               onChange={handleInputChange}/>
+                                                                        {errors.ownerLocationName &&
+                                                                            <p className="error-popup">{errors.ownerLocationName}</p>}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                            <SuggestObject mass={owners} name="owner"
+                                                                           handleChoice={handleChoice}
+                                                                           amountOfLabels={1}
+                                                                           labelKey="name"/>
+
+
+                                                        </div>
+
+                                                        <div className="item-box flex-row">
+                                                            <div>
+                                                                <h2>Производитель</h2>
+                                                                <p>
+                                                                    <span>Название</span>
+                                                                    <input name="manufacturer.name"
+                                                                           value={editProduct.manufacturer.name}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.manufacturerName &&
+                                                                        <p className="error-popup">{errors.manufacturerName}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Ежегодный оборот</span>
+                                                                    <input name="manufacturer.annualTurnover"
+                                                                           value={editProduct.manufacturer.annualTurnover}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.annualTurnover &&
+                                                                        <p className="error-popup">{errors.annualTurnover}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Количество работников</span>
+                                                                    <input name="manufacturer.employeesCount"
+                                                                           value={editProduct.manufacturer.employeesCount}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.employeesCount &&
+                                                                        <p className="error-popup">{errors.employeesCount}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Полное название</span>
+                                                                    <input name="manufacturer.fullName"
+                                                                           value={editProduct.manufacturer.fullName}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.fullName &&
+                                                                        <p className="error-popup">{errors.fullName}</p>}
+                                                                </p>
+                                                                <p>
+                                                                    <span>Рейтинг</span>
+                                                                    <input name="manufacturer.rating"
+                                                                           value={editProduct.manufacturer.rating}
+                                                                           onChange={handleInputChange}/>
+                                                                    {errors.manufacturerRating &&
+                                                                        <p className="error-popup">{errors.manufacturerRating}</p>}
+                                                                </p>
+
+                                                                <div className="item-box flex-row">
+                                                                    <div>
+                                                                        <h2>Официальный адрес </h2>
+                                                                        <p>
+                                                                            <span>Индекс</span>
+                                                                            <input
+                                                                                name="manufacturer.officialAddress.zipCode"
+                                                                                value={editProduct.manufacturer.officialAddress.zipCode}
+                                                                                onChange={handleInputChange}/>
+                                                                            {errors.zipCode &&
+                                                                                <p className="error-popup">{errors.zipCode}</p>}
+                                                                        </p>
+                                                                        <div className="item-box">
+                                                                            <h2>Город</h2>
+                                                                            <p>
+                                                                                <span>X</span>
+                                                                                <input
+                                                                                    name="manufacturer.officialAddress.town.x"
+                                                                                    value={editProduct.manufacturer.officialAddress.town.x}
+                                                                                    onChange={handleInputChange}/>
+                                                                                {errors.townX &&
+                                                                                    <p className="error-popup">{errors.townX}</p>}
+                                                                            </p>
+                                                                            <p>
+                                                                                <span>Y</span>
+                                                                                <input
+                                                                                    name="manufacturer.officialAddress.town.y"
+                                                                                    value={editProduct.manufacturer.officialAddress.town.y}
+                                                                                    onChange={handleInputChange}/>
+                                                                                {errors.townY &&
+                                                                                    <p className="error-popup">{errors.townY}</p>}
+                                                                            </p>
+                                                                            <p>
+                                                                                <span>Z</span>
+                                                                                <input
+                                                                                    name="manufacturer.officialAddress.town.z"
+                                                                                    value={editProduct.manufacturer.officialAddress.town.z}
+                                                                                    onChange={handleInputChange}/>
+                                                                                {errors.townZ &&
+                                                                                    <p className="error-popup">{errors.townZ}</p>}
+                                                                            </p>
+                                                                            <p>
+                                                                                <span>Название</span>
+                                                                                <input
+                                                                                    name="manufacturer.officialAddress.town.name"
+                                                                                    value={editProduct.manufacturer.officialAddress.town.name}
+                                                                                    onChange={handleInputChange}/>
+                                                                                {errors.townName &&
+                                                                                    <p className="error-popup">{errors.townName}</p>}
+                                                                            </p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <SuggestObject mass={officialAddresses}
+                                                                                   name="manufacturer.officialAddress"
+                                                                                   handleChoice={handleChoice}
+                                                                                   amountOfLabels={1}
+                                                                                   labelKey="zipCode"/>
+                                                                </div>
+                                                            </div>
+                                                            <SuggestObject mass={manufacturers} name="manufacturer"
+                                                                           handleChoice={handleChoice}
+                                                                           amountOfLabels={1} labelKey="name"/>
+                                                        </div>
+                                                    </div>
+                                                    <button className="btn btn-success"
+                                                            onClick={handleConfirmClick}>Подтвердить
+                                                    </button>
+                                                </div>
+                                            </div>)}
+
+                                    </td>
+                                </tr>
+                            )}
+                        </React.Fragment>
+                    ))
                 ) : (
                     <tr>
                         <td colSpan="11" className="align-center">Нет доступных продуктов</td>
