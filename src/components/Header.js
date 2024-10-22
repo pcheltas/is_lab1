@@ -1,8 +1,10 @@
 import React, {useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {logout} from "../redux/authSlice";
 
 const Header = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated)
+    const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -10,13 +12,8 @@ const Header = () => {
     };
 
     const handleLogout = () => {
-        // Логика выхода из аккаунта
-        console.log('Выход из аккаунта');
-    };
-
-    const handleSwitchAccount = () => {
-        // Логика смены аккаунта
-        console.log('Смена аккаунта');
+        toggleDropdown()
+        dispatch(logout())
     };
 
     return (
@@ -27,7 +24,6 @@ const Header = () => {
                 <span onClick={toggleDropdown} className="icon">👤</span>
                 {isOpen && (
                     <div className="dropdown-menu">
-                        <button onClick={handleSwitchAccount}>Сменить аккаунт</button>
                         <button onClick={handleLogout}>Выйти из аккаунта</button>
                     </div>
                 )}

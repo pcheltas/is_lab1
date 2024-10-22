@@ -44,9 +44,9 @@ const ProductTable = () => {
         }
     };
 
-    const handleButtonClick = (id) => {
-        dispatch(deleteProduct([id, token]))
-        dispatch(fetchProducts([token, requestParams]))
+    const handleButtonClick = async (id) => {
+        await dispatch(deleteProduct([id, token]))
+        await dispatch(fetchProducts([token, requestParams]))
     };
 
     const handleEditClick = (product) => {

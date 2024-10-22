@@ -138,7 +138,6 @@ export const sumRating = createAsyncThunk('products/sumRating', async (token) =>
 });
 
 export const lowerPriceByPercent = createAsyncThunk('products/lowerPrice', async (args) => {
-    console.log("lowering" + args[0] + args[1])
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + args[1],
@@ -146,9 +145,22 @@ export const lowerPriceByPercent = createAsyncThunk('products/lowerPrice', async
         }
     }
     const response = await axios.put(`${API_URL}/products/price:decrease/${args[0]}`, {}, getHeaders);
-    console.log(response.status)
     if (response.status !== 200) {
         throw new Error('Failed to update price');
+    }
+    return await response.data;
+});
+
+export const fetchBySubstring = createAsyncThunk('products/fetchBySubstring', async (args) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'application/json; charset=utf-8'
+        }
+    }
+    const response = await axios.get(`${API_URL}/products/substring/${args[0]}?limit=100`, getHeaders);
+    if (response.status !== 200) {
+        throw new Error('Failed to fetch products by substring');
     }
     return await response.data;
 });
@@ -190,6 +202,18 @@ const productSlice = createSlice({
                 state.products = action.payload;
             })
             .addCase(fetchProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(fetchBySubstring.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchBySubstring.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products = action.payload;
+            })
+            .addCase(fetchBySubstring.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

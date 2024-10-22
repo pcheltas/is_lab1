@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import '../Actions.css';
 import {useDispatch, useSelector} from "react-redux";
-import {deleteProductByRating, fetchProducts, lowerPriceByPercent, sumRating} from "../redux/productSlice"; // Импортируем файл стилей
+import {
+    deleteProductByRating,
+    fetchBySubstring,
+    fetchProducts,
+    lowerPriceByPercent,
+    sumRating
+} from "../redux/productSlice"; // Импортируем файл стилей
 
 const Actions = () => {
     const dispatch = useDispatch();
@@ -11,6 +17,7 @@ const Actions = () => {
     const [activeAction, setActiveAction] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [percentage, setPercentage] = useState(0);
+    const [subString, setSubString] = useState('');
 
     const handleActionClick = (action) => {
         setActiveAction(activeAction === action ? null : action);
@@ -33,15 +40,21 @@ const Actions = () => {
                 break;
             case 'Снизить цену всей продукции на заданный процент':
                 if (!isNaN(percentage) && percentage >= 0) {
-                    console.log(percentage)
                     dispatch(lowerPriceByPercent([percentage, token]));
                     dispatch(fetchProducts([token, requestParams]))
+                }
+                break;
+            case 'Показать все продукты с заданной подстрокой':
+                if (subString && subString.trim() !== '') {
+
+                    dispatch(fetchBySubstring([subString, token]));
+                    // dispatch(fetchProducts([token, requestParams]))
                 }
                 break;
             default:
                 break;
         }
-        // setActiveAction(null);
+        setSubString('');
         setInputValue('');
         setPercentage(0);
 
@@ -72,6 +85,17 @@ const Actions = () => {
                         />
                     </div>
                 );
+            case 'Показать все продукты с заданной подстрокой':
+                return (
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Введите подстроку"
+                            value={subString}
+                            onChange={(e) => setSubString(e.target.value)}
+                        />
+                    </div>
+                );
             default:
                 return null;
         }
@@ -81,7 +105,7 @@ const Actions = () => {
         <div className="actions-container">
             <h3>Действия</h3>
             {['Удалить один объект с заданным рейтингом', 'Рассчитать сумму рейтингов всех продуктов',
-                'Снизить цену всей продукции на заданный процент'].map((action) => (
+                'Снизить цену всей продукции на заданный процент', 'Показать все продукты с заданной подстрокой'].map((action) => (
                 <div key={action} className="action-item">
                     <div className="action-title" onClick={() => handleActionClick(action)}>
                         {action}
