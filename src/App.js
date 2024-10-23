@@ -11,7 +11,10 @@ import CreateProduct from "./components/CreateProduct";
 import {fetchColors, fetchCountries} from "./redux/personSlice";
 import {fetchUnitOfMeasure} from "./redux/productSlice";
 import {PersistGate} from "redux-persist/integration/react";
-import {persistor} from "./redux/store"; // Импортируем стили
+import {persistor} from "./redux/store";
+import Administration from "./components/Administration"; // Импортируем стили
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AppContent = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
@@ -20,6 +23,11 @@ const AppContent = () => {
 
     return (
         <div className="container">
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={true}
+            />
             <div className="header">
                 <Header/>
             </div>
@@ -30,6 +38,7 @@ const AppContent = () => {
                             <ProductTable/>
                         </div>
                         <div className="actions">
+                            <Administration/>
                             <CreateProduct/>
                             <Actions/>
                         </div>

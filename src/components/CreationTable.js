@@ -119,11 +119,11 @@ const CreationTable = ({isOpen, onClose}) => {
                 return;
         }
 
-        console.log(name)
-        console.log(JSON.stringify(item))
-        console.log('product: ' + JSON.stringify(product))
+        // console.log(name)
+        // console.log(JSON.stringify(item))
+        // console.log('product: ' + JSON.stringify(product))
         setProduct(updatedProduct);
-        console.log('updated product: ' + JSON.stringify(updatedProduct))
+        // console.log('updated product: ' + JSON.stringify(updatedProduct))
     }
 
     const handleInputChange = (e) => {

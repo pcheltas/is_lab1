@@ -109,9 +109,9 @@ const Filters = () => {
         setSelectedAsc(event.target.value);
     };
 
-    const formRequest = (page) => {
+    const formRequest = () => {
         const queryParams = [];
-        console.log("formRequest: " + page)
+        // console.log("formRequest: " + page)
         for (const [key, value] of Object.entries(filters)) {
             if (value) { // Проверяем, что значение не пустое
                 queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
@@ -205,7 +205,7 @@ const Filters = () => {
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
-        console.log(name, value)
+        // console.log(name, value)
         setFilters(prev => ({
             ...prev,
             [name]: value
@@ -226,7 +226,7 @@ const Filters = () => {
         dispatch(setRequestParams(request))
         dispatch(fetchProducts([token, request]))
         setIsOpen(false);
-        clearFields();
+        // clearFields();
     };
 
     return (

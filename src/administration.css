@@ -1,0 +1,19 @@
+.modal-row {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.close-button-admin, .confirm-button-admin {
+    background: none;  /* Убираем фоновый цвет */
+    border: none;      /* Убираем рамку */
+    font-size: 20px;   /* Увеличиваем размер шрифта для кнопок */
+    cursor: pointer;    /* Указатель при наведении на кнопку */
+}
+
+.close-button-admin {
+    color: red;        /* Красный цвет для крестика */
+}
+
+.confirm-button-admin {
+    color: green;      /* Зеленый цвет для галочки */
+}

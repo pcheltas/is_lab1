@@ -62,60 +62,65 @@ export const fetchUnitOfMeasure = createAsyncThunk('products/fetchUnitOfMeasure'
     return await response.data;
 });
 
-export const addProduct = createAsyncThunk('products/addProduct', async (args) => {
+export const addProduct = createAsyncThunk('products/addProduct', async (args, {rejectWithValue}) => {
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + args[1],
             'Content-Type': 'application/json; charset=utf-8'
         }
     }
-    const response = await axios.post(`${API_URL}/products`, args[0], getHeaders);
-    if (response.status !== 201) {
-        throw new Error('Failed to add product');
+    try{
+        const response = await axios.post(`${API_URL}/products`, args[0], getHeaders);
+        return await response.data;
+    } catch (error) {
+        const regex = /model\.(\w+)/;
+        const match = error.response.data.match(regex);
+        if (error.response.status === 500 && error.response.data.includes("null id") && match && match[1]) {
+            const modelName = match[1]
+            return rejectWithValue(`Продукт с таким ${modelName} уже существует. Невозможно создать`);
+        }
+        throw rejectWithValue(error.response?.data?.message || error.message || 'Произошла ошибка');
     }
-    return await response.data;
+
+
+
 });
 
-export const updateProduct = createAsyncThunk('products/updateProduct', async (args) => {
+export const updateProduct = createAsyncThunk('products/updateProduct', async (args, {rejectWithValue}) => {
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + args[1],
             'Content-Type': 'application/json; charset=utf-8'
         }
     }
-    const response = await axios.put(`${API_URL}/products`, args[0], getHeaders);
-    if (response.status !== 201) {
-        throw new Error('Failed to update product');
+    try {
+        const response = await axios.put(`${API_URL}/products`, args[0], getHeaders);
+        return await response.data;
+
+    } catch (error) {
+        if (error.response.status === 403) {
+            return rejectWithValue(`Продукт вам не принадлежит. Невозможно изменить`);
+        }
     }
-    return await response.data;
-    // const response = await fetch(`${API_URL}/products`, {
-    //     method: 'PUT',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //         'Authorization': 'Bearer' + args[1],
-    //     },
-    //     body: JSON.stringify(args[0]),
-    // });
-    //
-    // if (!response.ok) {
-    //     throw new Error('Failed to update product');
-    // }
-    // return await response.data;
 });
 
-export const deleteProduct = createAsyncThunk('products/deleteProduct', async (args) => {
+export const deleteProduct = createAsyncThunk('products/deleteProduct', async (args, {rejectWithValue}) => {
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + args[1],
             'Content-Type': 'application/json; charset=utf-8'
         }
     }
-    const response = await axios.delete(`${API_URL}/products/${args[0]}`, getHeaders);
-    console.log(response.status)
-    if (response.status !== 204) {
-        throw new Error('Failed to delete product');
+    try{
+        const response = await axios.delete(`${API_URL}/products/${args[0]}`, getHeaders);
+        return await response.data;
+    } catch (error) {
+        if (error.response.status === 403) {
+            return rejectWithValue(`Продукт вам не принадлежит. Невозможно удалить`);
+        }
     }
-    return await response.data;
+
+
 });
 
 export const deleteProductByRating = createAsyncThunk('products/deleteProduct/rating', async (args) => {

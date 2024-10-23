@@ -14,7 +14,9 @@ import {persistReducer,
     PERSIST,
     PURGE,
     REGISTER,} from "redux-persist";
-import addressSlice from "./addressSlice"; // по умолчанию использует localStorage
+import addressSlice from "./addressSlice";
+import adminSlice from "./adminSlice";
+import errorMiddleware from "./errorMiddleware"; // по умолчанию использует localStorage
 
 const persistConfig = {
     key: 'root',
@@ -29,40 +31,27 @@ const rootReducer = combineReducers({
     manufacturer: manufacturerSlice,
     coordinate: coordinateSlice,
     user: userSlice,
-    address: addressSlice
+    address: addressSlice,
+    admin: adminSlice,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
     reducer: persistedReducer,
+    // middleware: (getDefaultMiddleware) =>
+    //     getDefaultMiddleware({
+    //         serializableCheck: {
+    //             ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+    //         },
+    //     }),
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
                 ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
             },
-        }),
+        }).concat(errorMiddleware),
 })
 
 export const persistor = persistStore(store)
 export default store
-
-// const store = configureStore({
-//     reducer: {
-//         auth: persistedReducer,
-//         product: productSlice,
-//         person: personSlice,
-//         manufacturer: manufacturerSlice,
-//         coordinate: coordinateSlice,
-//         user: userSlice
-//     },
-// });
-// export default store; // Используем экспорт по умолчанию
-// export const persistor = persistStore(store); // Остальные экспорты могут быть именованными
-// const persistor = persistStore(store);
-// export { store, persistor };
-// // export default store;
-// // export default () => {
-// //     let persistor = persistStore(store)
-// //     return { store, persistor }
-// }

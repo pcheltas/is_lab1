@@ -3,13 +3,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
+import {addProduct, deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
 import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
 import {fetchUsers} from "../redux/userSlice";
 import {fetchAddresses} from "../redux/addressSlice";
 import SuggestObject from "./SuggestObjects";
+import {validateProduct} from "./validateProduct";
 
 const ProductTable = () => {
     const dispatch = useDispatch();
@@ -142,11 +143,19 @@ const ProductTable = () => {
         }
     };
 
+    const validate = () => {
+        const newErrors = validateProduct(editProduct)
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Возвращаем true, если нет ошибок
+    };
+
     const handleConfirmClick = async () => {
-        console.log('Updating product', JSON.stringify(editProduct));
-        await dispatch(updateProduct([editProduct, token]))
-        await dispatch(fetchProducts([token, requestParams]))
-        setIsEditing(false);
+        if (validate()) {
+            console.log('Updating product', JSON.stringify(editProduct));
+            await dispatch(updateProduct([editProduct, token]))
+            await dispatch(fetchProducts([token, requestParams]))
+            setIsEditing(false);
+        }
     };
 
     useEffect(() => {
