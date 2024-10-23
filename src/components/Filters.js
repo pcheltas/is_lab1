@@ -4,6 +4,7 @@ import coordinatesSlice from "../redux/coordinatesSlice";
 import {fetchProducts, setRequestParams} from "../redux/productSlice";
 import ReactPaginate from "react-paginate";
 import '../pagination.css'
+import '../filter.css'
 
 const Filters = () => {
     const manufacturers = useSelector(state => state.manufacturer.manufacturers)
@@ -38,28 +39,28 @@ const Filters = () => {
 
     }
     const filterOptions = [
-        { label: 'Название', name: 'name', type: 'text' },
-        { label: 'Координаты', name: 'coordinates', type: 'text' },
-        { label: 'Дата', name: 'createdAt', type: 'date' },
-        { label: 'Название производителя', name: 'manufacturer', type: 'text' },
-        { label: 'Стоимость', name: 'price', type: 'number' },
-        { label: 'Себестоимость', name: 'manufactureCost', type: 'number' },
-        { label: 'Рейтинг', name: 'rating', type: 'number' },
-        { label: 'Владелец', name: 'owner', type: 'text' },
-        { label: 'Создатель', name: 'login', type: 'text' },
+        {label: 'Название', name: 'name', type: 'text'},
+        {label: 'Координаты', name: 'coordinates', type: 'text'},
+        {label: 'Дата', name: 'createdAt', type: 'date'},
+        {label: 'Название производителя', name: 'manufacturer', type: 'text'},
+        {label: 'Стоимость', name: 'price', type: 'number'},
+        {label: 'Себестоимость', name: 'manufactureCost', type: 'number'},
+        {label: 'Рейтинг', name: 'rating', type: 'number'},
+        {label: 'Владелец', name: 'owner', type: 'text'},
+        {label: 'Создатель', name: 'login', type: 'text'},
     ];
 
     const sortOptions = [
-        { label: 'Название', value: 'name' },
-        { label: 'Координаты', value: 'coordinates' },
-        { label: 'Дата создания', value: 'createdAt' },
-        { label: 'Единица измерения', value: 'unitOfMeasure' },
-        { label: 'Производитель', value: 'manufacturer' },
-        { label: 'Стоимость', value: 'price' },
-        { label: 'Себестоимость', value: 'manufactureCost' },
-        { label: 'Рейтинг', value: 'rating' },
-        { label: 'Владелец', value: 'owner' },
-        { label: 'Создатель', value: 'login' },
+        {label: 'Название', value: 'name'},
+        {label: 'Координаты', value: 'coordinates'},
+        {label: 'Дата создания', value: 'createdAt'},
+        {label: 'Единица измерения', value: 'unitOfMeasure'},
+        {label: 'Производитель', value: 'manufacturer'},
+        {label: 'Стоимость', value: 'price'},
+        {label: 'Себестоимость', value: 'manufactureCost'},
+        {label: 'Рейтинг', value: 'rating'},
+        {label: 'Владелец', value: 'owner'},
+        {label: 'Создатель', value: 'login'},
     ];
     const [filters, setFilters] = useState(initialState);
     const unitOfMeasure = useSelector(state => state.product.unitOfMeasure)
@@ -232,119 +233,127 @@ const Filters = () => {
     };
 
     return (
-        <div className="filter-component">
+        <div className="filter-component filter-container-side">
             <button onClick={toggleDropdown} className="filter-button">
                 Фильтр
             </button>
             {isOpen && (
                 <div className="filter-dropdown-overlay" onClick={() => setIsOpen(false)}>
                     <div className="filter-dropdown" onClick={(e) => e.stopPropagation()}>
-                        {filterOptions.map(({label, name, type}) => (
-                            <div className="filter-option" key={name}>
-                                <span>{label}</span>
-                                <input
-                                    type={type}
-                                    name={name}
-                                    value={filters[name] || ''}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                        ))}
-                        <span>Единица измерения</span>
-                        <select
-                            name="unitOfMeasure"
-                            value={filters.unitOfMeasure || ''}
-                            onChange={handleInputChange}
-                        >
-                            <option value="" disabled>Выберите единицу измерения</option>
-                            {unitOfMeasure.map((option) => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-
-                        <h2>Сортировка</h2>
-                        <div>
-                            <label htmlFor="sortOptions">Сортировать по</label>
-                            <select
-                                id="sortOptions"
-                                value={selectedSort}
-                                onChange={handleSortChange}
-                            >
-                                <option value="">Выберите сортировку</option>
-                                {sortOptions.map(({label, value}) => (
-                                    <option key={value} value={value}>
-                                        {label}
-                                    </option>
+                        <div className="filter-container">
+                            <div>
+                                <h2 className="filter-name">Фильтр</h2>
+                                {filterOptions.map(({label, name, type}) => (
+                                    <div className="filter-option" key={name}>
+                                        <span>{label}</span>
+                                        <input
+                                            type={type}
+                                            name={name}
+                                            value={filters[name] || ''}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
                                 ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label htmlFor="sortOrder">Порядок сортировки</label>
-                            <select
-                                id="sortOrder"
-                                value={selectedAsc}
-                                onChange={handleAscChange}
-                            >
-                                <option value="">Выберите порядок</option>
-                                <option value="false">По убыванию</option>
-                                <option value="true">По возрастанию</option>
-                            </select>
-                        </div>
+                                <span>Единица измерения</span>
+                                <select
+                                    name="unitOfMeasure"
+                                    value={filters.unitOfMeasure || ''}
+                                    onChange={handleInputChange}
+                                >
+                                    <option value="" disabled>Выберите единицу измерения</option>
+                                    {unitOfMeasure.map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <h2 className="filter-name">Сортировка</h2>
+                                <p>
+                                    <h2 htmlFor="sortOptions">Сортировать по</h2>
+                                    <select
+                                        id="sortOptions"
+                                        value={selectedSort}
+                                        onChange={handleSortChange}
+                                    >
+                                        <option value="">Выберите сортировку</option>
+                                        {sortOptions.map(({label, value}) => (
+                                            <option key={value} value={value}>
+                                                {label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </p>
+                                <p>
+                                    <h2 htmlFor="sortOrder">Порядок сортировки</h2>
+                                    <select
+                                        id="sortOrder"
+                                        value={selectedAsc}
+                                        onChange={handleAscChange}
+                                    >
+                                        <option value="">Выберите порядок</option>
+                                        <option value="false">По убыванию</option>
+                                        <option value="true">По возрастанию</option>
+                                    </select>
+                                </p>
+                            </div>
 
+
+                            {/*{sortOptions.map(({ label, value }) => (*/}
+                            {/*    <div key={value}>*/}
+                            {/*        <label>*/}
+                            {/*            <input*/}
+                            {/*                type="radio"*/}
+                            {/*                value={value}*/}
+                            {/*                checked={selectedSort === value}*/}
+                            {/*                onChange={handleSortChange}*/}
+                            {/*            />*/}
+                            {/*            {label}*/}
+                            {/*        </label>*/}
+                            {/*    </div>*/}
+                            {/*))}*/}
+                            {/*<div>*/}
+                            {/*    <label>*/}
+                            {/*        <input*/}
+                            {/*            type="radio"*/}
+                            {/*            value="true"*/}
+                            {/*            checked={selectedAsc === 'true'}*/}
+                            {/*            onChange={handleAscChange}*/}
+                            {/*        />*/}
+                            {/*        По убыванию*/}
+                            {/*    </label>*/}
+                            {/*</div>*/}
+                            {/*<div>*/}
+                            {/*    <label>*/}
+                            {/*        <input*/}
+                            {/*            type="radio"*/}
+                            {/*            value="false"*/}
+                            {/*            checked={selectedAsc === 'false'}*/}
+                            {/*            onChange={handleAscChange}*/}
+                            {/*        />*/}
+                            {/*        По возрастанию*/}
+                            {/*    </label>*/}
+                            {/*</div>*/}
+                            {/*<div>*/}
+                            {/*    <button onClick={applyFilters} className="apply-button">*/}
+                            {/*        Применить*/}
+                            {/*    </button>*/}
+                            {/*</div>*/}
+                        </div>
                         <div>
                             <button onClick={applyFilters} className="apply-button">
                                 Применить
                             </button>
-                            <button onClick={clearFields} className="apply-button">
+                            <button onClick={clearFields} className="apply-button filter-clearbutton">
                                 Очистить
                             </button>
                         </div>
-                        {/*{sortOptions.map(({ label, value }) => (*/}
-                        {/*    <div key={value}>*/}
-                        {/*        <label>*/}
-                        {/*            <input*/}
-                        {/*                type="radio"*/}
-                        {/*                value={value}*/}
-                        {/*                checked={selectedSort === value}*/}
-                        {/*                onChange={handleSortChange}*/}
-                        {/*            />*/}
-                        {/*            {label}*/}
-                        {/*        </label>*/}
-                        {/*    </div>*/}
-                        {/*))}*/}
-                        {/*<div>*/}
-                        {/*    <label>*/}
-                        {/*        <input*/}
-                        {/*            type="radio"*/}
-                        {/*            value="true"*/}
-                        {/*            checked={selectedAsc === 'true'}*/}
-                        {/*            onChange={handleAscChange}*/}
-                        {/*        />*/}
-                        {/*        По убыванию*/}
-                        {/*    </label>*/}
-                        {/*</div>*/}
-                        {/*<div>*/}
-                        {/*    <label>*/}
-                        {/*        <input*/}
-                        {/*            type="radio"*/}
-                        {/*            value="false"*/}
-                        {/*            checked={selectedAsc === 'false'}*/}
-                        {/*            onChange={handleAscChange}*/}
-                        {/*        />*/}
-                        {/*        По возрастанию*/}
-                        {/*    </label>*/}
-                        {/*</div>*/}
-                        {/*<div>*/}
-                        {/*    <button onClick={applyFilters} className="apply-button">*/}
-                        {/*        Применить*/}
-                        {/*    </button>*/}
-                        {/*</div>*/}
                     </div>
                 </div>
             )}
-            <div id="container">
+            <div className="filter-container-pagination">
+
                 {pageCount > 0 && (
                     <ReactPaginate
                         breakLabel="..."
@@ -370,6 +379,7 @@ const Filters = () => {
                         <option value={15}>15</option>
                     </select>
                 </div>
+
             </div>
         </div>
     );

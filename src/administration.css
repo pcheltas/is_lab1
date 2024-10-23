@@ -17,3 +17,7 @@
 .confirm-button-admin {
     color: green;      /* Зеленый цвет для галочки */
 }
+
+.admin-window {
+    width: 40%;
+}

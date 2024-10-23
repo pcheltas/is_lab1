@@ -1,0 +1,99 @@
+.filter-button {
+    background-color: rgba(0, 118, 255, 0.82);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: large;
+    font-weight: 600;
+    font-family: "Fira Sans", sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    width: auto;
+    /*margin: 10px auto;*/
+    display: block;
+}
+
+.filter-button:hover {
+    background-color: #0056b3; /* Темнее при наведении */
+}
+
+.filter-dropdown-overlay {
+    position: fixed; /* Фиксированное позиционирование, чтобы закрыть другой контент */
+    top: 16%; /* Сверху */
+    left: 0; /* Слева */
+    width: 100%; /* Ширина на весь экран */
+    height: 100%; /* Высота на весь экран */
+    /*background-color: rgba(0, 0, 0, 0.5); !* Полупрозрачный черный фон *!*/
+    display: flex; /* Flexbox для центрирования */
+    /*align-items: center; !* Центрируем по вертикали *!*/
+    /*justify-content: center; !* Центрируем по горизонтали *!*/
+    z-index: 1000; /* Убедитесь, что.overlay находится выше другого контента */
+    margin-left: 30px;
+}
+/*.filter-dropdown-overlay {*/
+/*    position: fixed; !* Отобразить относительно родителя *!*/
+/*    top: 100%; !* Под кнопкой *!*/
+/*    left: 0; !* Выравнивание по левому краю *!*/
+/*    width: 100%; !* Ширина такая же, как у кнопки *!*/
+/*    background-color: white; !* Белый фон для выпадающего окна *!*/
+/*    padding: 20px; !* Внутренние отступы *!*/
+/*    border-radius: 8px; !* Закругленные углы *!*/
+/*    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); !* Тень *!*/
+/*    display: flex; !* Flexbox для горизонтального расположения *!*/
+/*    flex-direction: column; !* Вертикальное расположение блоков *!*/
+/*    z-index: 999; !* Убедитесь, что выпадающее окно выше других элементов *!*/
+/*}*/
+
+.filter-dropdown {
+    background-color: white; /* Белый фон для выпадающего окна */
+    border-radius: 8px; /* Закругленные углы */
+    padding: 20px; /* Внутренние отступы */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Тень */
+    width: auto; /* Ширина для окна фильтрации */
+    height: fit-content;
+}
+
+.filter-option {
+    margin-bottom: 15px; /* Отступ снизу */
+}
+
+.filter-header {
+    display: flex; /* Используем flex для горизонтального расположения */
+    justify-content: space-between; /* Пространство между элементами */
+    align-items: center; /* Вертикальное центрирование */
+    margin-bottom: 20px; /* Отступ снизу */
+}
+
+.sort-wrapper {
+    display: flex; /* Flexbox для сортировки */
+    align-items: center; /* Центрируем по вертикали */
+}
+
+.filter-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.filter-name {
+    font-size: large;
+    color: #114ba2;
+}
+
+.filter-clearbutton {
+    margin-left: 15px;
+    padding: 2px;
+    background-color: rgba(0, 118, 255, 0.82);
+}
+
+.filter-container-side {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.filter-container-pagination{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}

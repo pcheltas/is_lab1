@@ -44,24 +44,28 @@ const Administration = () => {
                     <button onClick={handleChange} className="create-product-button">Админка</button>
                     {open ? <div>
                         <div className="modal-overlay">
-                            <div className="modal-content">
+                            <div className="modal-content admin-window">
                                 <div className="button-container">
                                     <button className="close-button" onClick={handleChange}>&times;</button>
                                 </div>
-                                <div className="modal-content">
-                                    {potentialAdmins.map((item, index) => (
-                                        <div className="modal-row" key={index} style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'center'
-                                        }}>
-                                            <span>{item.login}</span>
-                                            <div>
-                                                <button className="close-button-admin" onClick={() => handleDecline(item.id)}>✖</button>
-                                                <button className="confirm-button-admin" onClick={() => handleAccept(item.id)}>✔</button>
+                                <div className="modal-content ">
+                                    {potentialAdmins.length === 0 ? (
+                                        <span>Нет потенциальных админов</span>
+                                    ) : (
+                                        potentialAdmins.map((item, index) => (
+                                            <div className="modal-row" key={index} style={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                alignItems: 'center'
+                                            }}>
+                                                <span>{item.login}</span>
+                                                <div>
+                                                    <button className="close-button-admin" onClick={() => handleDecline(item.id)}>✖</button>
+                                                    <button className="confirm-button-admin" onClick={() => handleAccept(item.id)}>✔</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))
+                                    )}
                                 </div>
                             </div>
                         </div>
