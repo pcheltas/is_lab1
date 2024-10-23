@@ -14,7 +14,7 @@ const API_URL = 'http://localhost:8080';
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async (args) => {
 
-    console.log(fetch)// const axiosInstance = axios.create({
+    console.log("fetch")// const axiosInstance = axios.create({
     //     baseURL: 'http://localhost:8080/',
     //     headers: {
     //         'Content-Type': 'application/json',

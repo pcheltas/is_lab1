@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
-import {addProduct, deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
+import {deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
 import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
@@ -31,7 +31,9 @@ const ProductTable = () => {
 
     useEffect(() => {
         const loadData = async () => {
+            console.log(requestParams)
             await Promise.all([
+
                 dispatch(fetchColors(token)),
                 dispatch(fetchCountries(token)),
                 dispatch(fetchUnitOfMeasure(token)),
@@ -39,12 +41,17 @@ const ProductTable = () => {
                 dispatch(fetchPersons(token)),
                 dispatch(fetchCoordinates(token)),
                 dispatch(fetchUsers(token)),
-                dispatch(fetchAddresses(token))
-                // dispatch(fetchProducts())
+                dispatch(fetchAddresses(token)),
+                dispatch(fetchProducts([token, requestParams]))
             ]);
         };
-        loadData(); // Вызываем асинхронную функцию
-    }, [dispatch]);
+        loadData();
+        const interval = setInterval(() => {
+            loadData();
+        }, 5000);
+
+        return () => clearInterval(interval);
+    }, [dispatch, token, requestParams]);
     const handleRowClick = (id) => {
         setSelectedProductId(prevSelectedId => (prevSelectedId === id ? null : id));
         if (selectedProductId !== id) {

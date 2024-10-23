@@ -102,10 +102,12 @@ const Filters = () => {
     };
 
     const handleSortChange = (event) => {
+        console.log(event.target.value)
         setSelectedSort(event.target.value);
     };
 
     const handleAscChange = (event) => {
+        console.log(event.target.value)
         setSelectedAsc(event.target.value);
     };
 
@@ -212,7 +214,7 @@ const Filters = () => {
         }));
     };
 
-    const applyFilters = () => {
+    const applyFilters = async () => {
         filters.manufacturer = searchManufacturerByName(filters.manufacturer)
         filters.owner = searchOwnerByName(filters.owner)
         filters.coordinates = searchCoordinateByXY(filters.coordinates)
@@ -223,7 +225,7 @@ const Filters = () => {
         console.log(selectedAsc)
         const request = formRequest()
         console.log(request)
-        dispatch(setRequestParams(request))
+        await dispatch(setRequestParams(request))
         dispatch(fetchProducts([token, request]))
         setIsOpen(false);
         // clearFields();
@@ -237,7 +239,7 @@ const Filters = () => {
             {isOpen && (
                 <div className="filter-dropdown-overlay" onClick={() => setIsOpen(false)}>
                     <div className="filter-dropdown" onClick={(e) => e.stopPropagation()}>
-                        {filterOptions.map(({ label, name, type }) => (
+                        {filterOptions.map(({label, name, type}) => (
                             <div className="filter-option" key={name}>
                                 <span>{label}</span>
                                 <input
@@ -263,46 +265,82 @@ const Filters = () => {
                         </select>
 
                         <h2>Сортировка</h2>
-                        {sortOptions.map(({ label, value }) => (
-                            <div key={value}>
-                                <label>
-                                    <input
-                                        type="radio"
-                                        value={value}
-                                        checked={selectedSort === value}
-                                        onChange={handleSortChange}
-                                    />
-                                    {label}
-                                </label>
-                            </div>
-                        ))}
                         <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="true"
-                                    checked={selectedAsc === 'true'}
-                                    onChange={handleAscChange}
-                                />
-                                По убыванию
-                            </label>
+                            <label htmlFor="sortOptions">Сортировать по</label>
+                            <select
+                                id="sortOptions"
+                                value={selectedSort}
+                                onChange={handleSortChange}
+                            >
+                                <option value="">Выберите сортировку</option>
+                                {sortOptions.map(({label, value}) => (
+                                    <option key={value} value={value}>
+                                        {label}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div>
-                            <label>
-                                <input
-                                    type="radio"
-                                    value="false"
-                                    checked={selectedAsc === 'false'}
-                                    onChange={handleAscChange}
-                                />
-                                По возрастанию
-                            </label>
+                            <label htmlFor="sortOrder">Порядок сортировки</label>
+                            <select
+                                id="sortOrder"
+                                value={selectedAsc}
+                                onChange={handleAscChange}
+                            >
+                                <option value="">Выберите порядок</option>
+                                <option value="false">По убыванию</option>
+                                <option value="true">По возрастанию</option>
+                            </select>
                         </div>
+
                         <div>
                             <button onClick={applyFilters} className="apply-button">
                                 Применить
                             </button>
+                            <button onClick={clearFields} className="apply-button">
+                                Очистить
+                            </button>
                         </div>
+                        {/*{sortOptions.map(({ label, value }) => (*/}
+                        {/*    <div key={value}>*/}
+                        {/*        <label>*/}
+                        {/*            <input*/}
+                        {/*                type="radio"*/}
+                        {/*                value={value}*/}
+                        {/*                checked={selectedSort === value}*/}
+                        {/*                onChange={handleSortChange}*/}
+                        {/*            />*/}
+                        {/*            {label}*/}
+                        {/*        </label>*/}
+                        {/*    </div>*/}
+                        {/*))}*/}
+                        {/*<div>*/}
+                        {/*    <label>*/}
+                        {/*        <input*/}
+                        {/*            type="radio"*/}
+                        {/*            value="true"*/}
+                        {/*            checked={selectedAsc === 'true'}*/}
+                        {/*            onChange={handleAscChange}*/}
+                        {/*        />*/}
+                        {/*        По убыванию*/}
+                        {/*    </label>*/}
+                        {/*</div>*/}
+                        {/*<div>*/}
+                        {/*    <label>*/}
+                        {/*        <input*/}
+                        {/*            type="radio"*/}
+                        {/*            value="false"*/}
+                        {/*            checked={selectedAsc === 'false'}*/}
+                        {/*            onChange={handleAscChange}*/}
+                        {/*        />*/}
+                        {/*        По возрастанию*/}
+                        {/*    </label>*/}
+                        {/*</div>*/}
+                        {/*<div>*/}
+                        {/*    <button onClick={applyFilters} className="apply-button">*/}
+                        {/*        Применить*/}
+                        {/*    </button>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             )}
