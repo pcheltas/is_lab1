@@ -13,7 +13,7 @@ import {fetchUnitOfMeasure} from "./redux/productSlice";
 import {PersistGate} from "redux-persist/integration/react";
 import {persistor} from "./redux/store";
 import Administration from "./components/Administration"; // Импортируем стили
-import { ToastContainer } from 'react-toastify';
+import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const AppContent = () => {
@@ -23,29 +23,33 @@ const AppContent = () => {
 
     return (
         <div className="container">
-            <ToastContainer
-                position="top-center"
-                autoClose={2000}
-                hideProgressBar={true}
-            />
-            <div className="header">
-                <Header/>
-            </div>
-            <div className="mainPage">
-                {isAuthenticated ?
-                    <div className="columns">
-                        <div className="products">
-                            <ProductTable/>
-                        </div>
-                        <div className="actions">
-                            <Administration/>
-                            <CreateProduct/>
-                            <Actions/>
-                        </div>
+            <div className="background overlay">
+                <div className="overlay">
+                    <ToastContainer
+                        position="top-center"
+                        autoClose={2000}
+                        hideProgressBar={true}
+                    />
+                    <div className="header">
+                        <Header/>
                     </div>
-                    : <Auth/>}
+                    <div className="mainPage">
+                        {isAuthenticated ?
+                            <div className="columns">
+                                <div className="products">
+                                    <ProductTable/>
+                                </div>
+                                <div className="actions">
+                                    <Administration/>
+                                    <CreateProduct/>
+                                    <Actions/>
+                                </div>
+                            </div>
+                            : <Auth/>}
 
 
+                    </div>
+                </div>
             </div>
         </div>
     );

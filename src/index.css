@@ -3,8 +3,30 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    /*background-color: #f4f4f4;*/
+
+}
+
+.background {
+    background-image: url('background.jpg');
+    background-size: cover; /* Покрывает всю область фона */
+    background-position: center; /* Центрирует изображение */
+    background-repeat: no-repeat; /* Изображение не повторяется */
+    height: 100vh; /* Высота 100% от высоты окна */
+    margin: 0; /* Убираем отступы по умолчанию */
     color: #333;
+    position: relative;
+    /*filter: blur(10px);*/
+}
+
+.overlay {
+    background-color: rgba(255, 255, 255, 0.5); /* Белый цвет с 50% прозрачностью */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1; /* Чтобы наложить поверх фона */
 }
 
 header {
@@ -116,7 +138,7 @@ tbody tr:hover {
 .mainPage {
     flex-grow: 1; /* Позволяет контенту занимать оставшееся пространство */
     padding: 20px;
-    background-color: #f1f1f1;
+    /*background-color: #f1f1f1;*/
     width: 100vw;
 }
 
