@@ -18,6 +18,8 @@ import addressSlice from "./addressSlice";
 import adminSlice from "./adminSlice";
 import errorMiddleware from "./errorMiddleware"; // по умолчанию использует localStorage
 
+export const API_URL = 'http://localhost:8080';
+
 const persistConfig = {
     key: 'root',
     storage,

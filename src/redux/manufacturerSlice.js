@@ -1,7 +1,8 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from "axios";
+import {API_URL} from "./store";
 
-const API_URL = 'http://localhost:8080';
+// const API_URL = 'http://localhost:8080';
 
 // Асинхронный запрос для получения производителей
 export const fetchManufacturers = createAsyncThunk('manufacturer/fetchManufacturers', async (token) => {

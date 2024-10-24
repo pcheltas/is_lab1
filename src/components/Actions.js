@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import '../Actions.css';
 import {useDispatch, useSelector} from "react-redux";
 import {
@@ -14,14 +14,20 @@ const Actions = () => {
     const token = useSelector(state => state.auth.token)
     const requestParams = useSelector(state => state.product.requestParams)
     const sumRat = useSelector(state => state.product.sumRating)
+    const substringProducts = useSelector(state => state.product.substringProducts)
     const [activeAction, setActiveAction] = useState(null);
     const [inputValue, setInputValue] = useState('');
     const [percentage, setPercentage] = useState(0);
     const [subString, setSubString] = useState('');
+    const [showSubsring, setShowSubstring] = useState(false)
 
     const handleActionClick = (action) => {
         setActiveAction(activeAction === action ? null : action);
     };
+
+    const handleShowSubString = () => {
+        setShowSubstring(!showSubsring)
+    }
 
 
     const handleApply = async () => {
@@ -29,7 +35,7 @@ const Actions = () => {
         switch (activeAction) {
             case 'Удалить один объект с заданным рейтингом':
                 if (inputValue && inputValue.trim() !== '') {
-                    await dispatch(deleteProductByRating([inputValue, token]))                    ;
+                    await dispatch(deleteProductByRating([inputValue, token]));
                     await dispatch(fetchProducts([token, requestParams]))
                 }
                 break;
@@ -47,6 +53,7 @@ const Actions = () => {
                 if (subString && subString.trim() !== '') {
                     dispatch(fetchBySubstring([subString, token]));
                 }
+                handleShowSubString();
                 break;
             default:
                 break;
@@ -117,6 +124,55 @@ const Actions = () => {
                     )}
                 </div>
             ))}
+            {showSubsring ?
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <div className="button-container subString-container">
+                            <button className="close-button" onClick={handleShowSubString}>&times;</button>
+                            <table>
+                                <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Название</th>
+                                    <th>Координаты</th>
+                                    <th>Дата</th>
+                                    <th>Измерение</th>
+                                    <th>Производитель</th>
+                                    <th>Стоимость</th>
+                                    <th>Себестоимость</th>
+                                    <th>Рейтинг</th>
+                                    <th>Владелец</th>
+                                    <th>Создатель</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {substringProducts.length > 0 ? (
+                                    substringProducts.map(product => (
+                                        <tr className="productTableBody" key={product.id}>
+                                            <td>{product.id}</td>
+                                            <td>{product.name}</td>
+                                            <td>{`(${product.coordinates.x}, ${product.coordinates.y})`}</td>
+                                            <td>{product.creationDate}</td>
+                                            <td>{product.unitOfMeasure}</td>
+                                            <td>{product.manufacturer.name}</td>
+                                            <td>{product.price}</td>
+                                            <td>{product.manufactureCost}</td>
+                                            <td>{product.rating}</td>
+                                            <td>{product.owner.name}</td>
+                                            <td>{product.user.login}</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="11">Продуктов с такой подстрокой нет</td>
+                                    </tr>
+                                )}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                : null}
         </div>
     );
 };

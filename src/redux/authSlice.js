@@ -1,8 +1,9 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
+import {API_URL} from "./store";
 import {fetchProducts} from "./productSlice";
 
-const API_URL = 'http://localhost:8080';
+// const API_URL = 'http://localhost:8080';
 const initialState = {
     isAuthenticated: false,
     token: null,

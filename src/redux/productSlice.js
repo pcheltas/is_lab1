@@ -1,48 +1,16 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import axios from "axios";
+import {API_URL} from "./store";
 
-
-const API_URL = 'http://localhost:8080';
-// export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-//     const response = await fetch(`${API_URL}/products`);
-//     if (!response.ok) {
-//         console.log(response)
-//         throw new Error('Failed to fetch products');
-//     }
-//     return await response.json();
-// });
 
 export const fetchProducts = createAsyncThunk('products/fetchProducts', async (args) => {
-
-    console.log("fetch")// const axiosInstance = axios.create({
-    //     baseURL: 'http://localhost:8080/',
-    //     headers: {
-    //         'Content-Type': 'application/json',
-    //     }
-    // })
-    //
-    // axiosInstance.interceptors.request.use(
-    //     (config) => {
-    //         if (token) {
-    //             config.headers['Authorization'] = `Bearer ${token}`;
-    //         }
-    //         return config;
-    //     },
-    //     (error) => {
-    //         return Promise.reject(error);
-    //     }
-    // );
-
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + args[0]
         }
     }
-    console.log(getHeaders)
     const response = await axios.get(`${API_URL}/products${args[1]}`, getHeaders);
-    console.log(response.status)
     if (response.status !== 200) {
-        console.log(response)
         throw new Error('Failed to fetch products');
     }
     return await response.data;
@@ -58,7 +26,6 @@ export const fetchUnitOfMeasure = createAsyncThunk('products/fetchUnitOfMeasure'
     if (response.status !== 200) {
         throw new Error('Failed to fetch units of measure');
     }
-    console.log(response.data)
     return await response.data;
 });
 
@@ -131,7 +98,6 @@ export const deleteProductByRating = createAsyncThunk('products/deleteProduct/ra
         }
     }
     const response = await axios.delete(`${API_URL}/products/rating/${args[0]}`, getHeaders);
-    console.log(response.status)
     if (response.status !== 204) {
         throw new Error('Failed to delete product');
     }
@@ -139,7 +105,6 @@ export const deleteProductByRating = createAsyncThunk('products/deleteProduct/ra
 });
 
 export const sumRating = createAsyncThunk('products/sumRating', async (token) => {
-    console.log(sumRating)
     const getHeaders = {
         headers: {
             'Authorization': 'Bearer ' + token,
@@ -161,7 +126,7 @@ export const lowerPriceByPercent = createAsyncThunk('products/lowerPrice', async
         }
     }
     const response = await axios.put(`${API_URL}/products/price:decrease/${args[0]}`, {}, getHeaders);
-    if (response.status !== 200) {
+    if (response.status !== 204) {
         throw new Error('Failed to update price');
     }
     return await response.data;
@@ -186,6 +151,7 @@ const productSlice = createSlice({
     name: 'product',
     initialState: {
         products: [],
+        substringProducts: [],
         unitOfMeasure: [],
         requestParams: "",
         sumRating: ""
@@ -227,7 +193,7 @@ const productSlice = createSlice({
             })
             .addCase(fetchBySubstring.fulfilled, (state, action) => {
                 state.loading = false;
-                state.products = action.payload;
+                state.substringProducts = action.payload;
             })
             .addCase(fetchBySubstring.rejected, (state, action) => {
                 state.loading = false;

@@ -24,7 +24,7 @@ const AppContent = () => {
     return (
         <div className="container">
             <div className="background overlay">
-                <div className="overlay">
+                <div >
                     <ToastContainer
                         position="top-center"
                         autoClose={2000}

@@ -31,7 +31,6 @@ const ProductTable = () => {
 
     useEffect(() => {
         const loadData = async () => {
-            console.log(requestParams)
             await Promise.all([
 
                 dispatch(fetchColors(token)),
@@ -48,8 +47,7 @@ const ProductTable = () => {
         loadData();
         const interval = setInterval(() => {
             loadData();
-        }, 5000);
-
+        }, 1000);
         return () => clearInterval(interval);
     }, [dispatch, token, requestParams]);
     const handleRowClick = (id) => {

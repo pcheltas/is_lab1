@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import coordinatesSlice from "../redux/coordinatesSlice";
 import {fetchProducts, setRequestParams} from "../redux/productSlice";
 import ReactPaginate from "react-paginate";
 import '../pagination.css'
@@ -75,10 +74,18 @@ const Filters = () => {
         return pers ? pers.id : '';
     };
 
-    const searchUserByLogin = (login) => {
-        const us = users.find(person => person.name === login);
-        return us ? us.id : '';
-    };
+    // const searchUserByLogin = (login) => {
+    //     const us = users.find(person => person === login);
+    //     console.log(us.index)
+    //     return us ? us.index : '';
+    // };
+
+    const convertDateToUnix = (dateString) => {
+        const date = new Date(dateString + "T00:00:00Z");
+        console.log(dateString)
+        console.log(date)
+        return Math.floor(date.getTime() / 1000)
+    }
 
     const searchCoordinateByXY = (XY) => {
         console.log(filters)
@@ -116,6 +123,9 @@ const Filters = () => {
         const queryParams = [];
         // console.log("formRequest: " + page)
         for (const [key, value] of Object.entries(filters)) {
+            if (key === 'createdAt' || key === 'manufacturer' || key === 'owner' || key === 'coordinates') {
+                continue; // Пропускает текущую итерацию цикла
+            }
             if (value) { // Проверяем, что значение не пустое
                 queryParams.push(`${encodeURIComponent(key)}=${encodeURIComponent(value)}`);
             }
@@ -123,6 +133,18 @@ const Filters = () => {
 
         if (selectedSort) {
             queryParams.push(`sortBy=${encodeURIComponent(selectedSort)}`);
+        }
+        if (filters.createdAt){
+            queryParams.push(`createdAt=${convertDateToUnix(filters.createdAt)}`)
+        }
+        if (filters.manufacturer){
+            queryParams.push(`manufacturer=${searchManufacturerByName(filters.manufacturer)}`)
+        }
+        if (filters.owner){
+            queryParams.push(`owner=${searchOwnerByName(filters.owner)}`)
+        }
+        if (filters.coordinates){
+            queryParams.push(`coordinates=${searchCoordinateByXY(filters.coordinates)}`)
         }
         if (selectedAsc) {
             queryParams.push(`ascending=${encodeURIComponent(selectedAsc)}`);
@@ -216,10 +238,6 @@ const Filters = () => {
     };
 
     const applyFilters = async () => {
-        filters.manufacturer = searchManufacturerByName(filters.manufacturer)
-        filters.owner = searchOwnerByName(filters.owner)
-        filters.coordinates = searchCoordinateByXY(filters.coordinates)
-        filters.login = searchUserByLogin(filters.login)
         console.log('Применение фильтров:', JSON.stringify(filters));
         console.log('Сортировать по колонке ' + selectedSort)
         console.log('Сортировать по ' + selectedAsc)
@@ -229,7 +247,6 @@ const Filters = () => {
         await dispatch(setRequestParams(request))
         dispatch(fetchProducts([token, request]))
         setIsOpen(false);
-        // clearFields();
     };
 
     return (
