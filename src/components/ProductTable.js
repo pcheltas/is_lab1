@@ -3,7 +3,13 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import Filters from "./Filters";
 import {useDispatch, useSelector} from "react-redux";
-import {deleteProduct, fetchProducts, fetchUnitOfMeasure, updateProduct} from "../redux/productSlice";
+import {
+    deleteProduct,
+    fetchImportHistory,
+    fetchProducts,
+    fetchUnitOfMeasure,
+    updateProduct
+} from "../redux/productSlice";
 import {fetchColors, fetchCountries, fetchPersons} from "../redux/personSlice";
 import {fetchManufacturers} from "../redux/manufacturerSlice";
 import {fetchCoordinates} from "../redux/coordinatesSlice";
@@ -41,13 +47,14 @@ const ProductTable = () => {
                 dispatch(fetchCoordinates(token)),
                 dispatch(fetchUsers(token)),
                 dispatch(fetchAddresses(token)),
-                dispatch(fetchProducts([token, requestParams]))
+                dispatch(fetchProducts([token, requestParams])),
+                dispatch(fetchImportHistory(token))
             ]);
         };
         loadData();
         const interval = setInterval(() => {
             loadData();
-        }, 1000);
+        }, 5000);
         return () => clearInterval(interval);
     }, [dispatch, token, requestParams]);
     const handleRowClick = (id) => {
@@ -166,6 +173,7 @@ const ProductTable = () => {
     useEffect(() => {
         const loadData = async () => {
             await dispatch(fetchProducts([token, requestParams]));
+            await dispatch(fetchImportHistory(token))
             setLoading(false);
         };
         loadData();

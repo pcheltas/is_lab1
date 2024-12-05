@@ -16,6 +16,19 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async (a
     return await response.data;
 });
 
+export const fetchImportHistory = createAsyncThunk('products/fetchImportHistory', async (token) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    }
+    const response = await axios.get(`${API_URL}/imports`, getHeaders);
+    if (response.status !== 200) {
+        throw new Error('Failed to fetch import history');
+    }
+    return await response.data;
+});
+
 export const fetchUnitOfMeasure = createAsyncThunk('products/fetchUnitOfMeasure', async (token) => {
     const getHeaders = {
         headers: {
@@ -42,15 +55,33 @@ export const addProduct = createAsyncThunk('products/addProduct', async (args, {
     } catch (error) {
         const regex = /model\.(\w+)/;
         const match = error.response.data.match(regex);
-        if (error.response.status === 500 && error.response.data.includes("null id") && match && match[1]) {
-            const modelName = match[1]
-            return rejectWithValue(`Продукт с таким ${modelName} уже существует. Невозможно создать`);
+        if (error.response.data) {
+            return rejectWithValue(error.response.data);
         }
         throw rejectWithValue(error.response?.data?.message || error.message || 'Произошла ошибка');
     }
+});
 
-
-
+export const addProductFile = createAsyncThunk('products/addProductFile', async (args, {rejectWithValue}) => {
+    const getHeaders = {
+        headers: {
+            'Authorization': 'Bearer ' + args[1],
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    const formData = new FormData();
+    formData.append('file', args[0]);
+    try{
+        const response = await axios.post(`${API_URL}/products/import`, formData, getHeaders);
+        return await response.data;
+    } catch (error) {
+        const regex = /model\.(\w+)/;
+        const match = error.response.data.match(regex);
+        if (error.response.data) {
+            return rejectWithValue(error.response.data);
+        }
+        throw rejectWithValue(error.response?.data?.message || error.message || 'Произошла ошибка');
+    }
 });
 
 export const updateProduct = createAsyncThunk('products/updateProduct', async (args, {rejectWithValue}) => {
@@ -154,7 +185,8 @@ const productSlice = createSlice({
         substringProducts: [],
         unitOfMeasure: [],
         requestParams: "",
-        sumRating: ""
+        sumRating: "",
+        imports: []
     },
     reducers: {
         setRequestParams(state, action) {
@@ -184,6 +216,30 @@ const productSlice = createSlice({
                 state.products = action.payload;
             })
             .addCase(fetchProducts.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(fetchImportHistory.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(fetchImportHistory.fulfilled, (state, action) => {
+                state.loading = false;
+                state.imports = action.payload;
+            })
+            .addCase(fetchImportHistory.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(addProductFile.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(addProductFile.fulfilled, (state, action) => {
+                state.loading = false;
+                state.products.push(...action.payload);
+            })
+            .addCase(addProductFile.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

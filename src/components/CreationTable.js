@@ -219,281 +219,281 @@ const CreationTable = ({isOpen, onClose}) => {
     };
 
     return (
-        <div className="modal-overlay">
-            <div className="modal-content">
-                <div className="button-container">
-                    <button className="close-button" onClick={onClose}>&times;</button>
-                </div>
-                <div className="creation-box">
+        // <div className="modal-overlay">
+        //     <div className="modal-content">
+        //         <div className="button-container">
+        //             <button className="close-button" onClick={onClose}>&times;</button>
+        //         </div>
+        <div>
+            <div className="creation-box">
+                <div className="item-box flex-row">
+                    <div>
+                        <span>Название</span>
+                        <input name="name" value={product.name}
+                               onChange={handleInputChange}/>
+                        {errors.name && <p className="error-popup">{errors.name}</p>}
+                        <p>
+                            <span>Единица измерения</span>
+                            <select
+                                name="unitOfMeasure"
+                                value={product.unitOfMeasure}
+                                onChange={handleInputChange}
+                            >
+                                <option value="" disabled={product.unitOfMeasure} selected={true}>
+                                    Выберите единицу измерения
+                                </option>
+                                {unitOfMeasure.map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.unitOfMeasure && <p className="error-popup">{errors.unitOfMeasure}</p>}
+                        </p>
+                        <p>
+                            <span>Стоимость</span>
+                            <input name="price"
+                                   value={product.price}
+                                   onChange={handleInputChange}/>
+                            {errors.price && <p className="error-popup">{errors.price}</p>}
+                        </p>
+                        <p>
+                            <span>Себестоимость</span>
+                            <input name="manufactureCost"
+                                   value={product.manufactureCost}
+                                   onChange={handleInputChange}/>
+                            {errors.manufactureCost && <p className="error-popup">{errors.manufactureCost}</p>}
+                        </p>
+                        <p>
+                            <span>Рейтинг</span>
+                            <input name="rating"
+                                   value={product.rating}
+                                   onChange={handleInputChange}/>
+                            {errors.rating && <p className="error-popup">{errors.rating}</p>}
+                        </p>
+
+
+                        <div className="item-box">
+                            <h2>Координаты</h2>
+                            <p>
+                                <span>X</span>
+                                <input name="coordinates.x" value={product.coordinates.x}
+                                       onChange={handleInputChange}/>
+                                {errors.coordinatesX && <p className="error-popup">{errors.coordinatesX}</p>}
+                            </p>
+                            <p>
+                                <span>Y</span>
+                                <input name="coordinates.y" value={product.coordinates.y}
+                                       onChange={handleInputChange}/>
+                                {errors.coordinatesY && <p className="error-popup">{errors.coordinatesY}</p>}
+                            </p>
+                        </div>
+                    </div>
                     <div className="item-box flex-row">
                         <div>
-                            <span>Название</span>
-                            <input name="name" value={product.name}
-                                   onChange={handleInputChange}/>
-                            {errors.name && <p className="error-popup">{errors.name}</p>}
+                            <h2>Владелец</h2>
                             <p>
-                                <span>Единица измерения</span>
-                                <select
-                                    name="unitOfMeasure"
-                                    value={product.unitOfMeasure}
-                                    onChange={handleInputChange}
-                                >
-                                    <option value="" disabled={product.unitOfMeasure} selected={true}>
-                                        Выберите единицу измерения
+                                <span>Имя</span>
+                                <input name="owner.name"
+                                       value={product.owner.name}
+                                       onChange={handleInputChange}/>
+                                {errors.ownerName && <p className="error-popup">{errors.ownerName}</p>}
+                            </p>
+                            <p>
+                                <span>Цвет глаз</span>
+                                <select name="owner.eyeColor" value={product.owner.eyeColor}
+                                        onChange={handleInputChange}>
+                                    <option value="" disabled={product.owner.eyeColor} selected={true}>
+                                        Выберите цвет
                                     </option>
-                                    {unitOfMeasure.map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
+                                    {color.map((option) => (
+                                        <option key={option} value={option}>{option}</option>
                                     ))}
                                 </select>
-                                {errors.unitOfMeasure && <p className="error-popup">{errors.unitOfMeasure}</p>}
+                                {errors.ownerEyeColor && <p className="error-popup">{errors.ownerEyeColor}</p>}
                             </p>
                             <p>
-                                <span>Стоимость</span>
-                                <input name="price"
-                                       value={product.price}
-                                       onChange={handleInputChange}/>
-                                {errors.price && <p className="error-popup">{errors.price}</p>}
+                                <span>Цвет волос</span>
+                                <select name="owner.hairColor"
+                                        value={product.owner.hairColor}
+                                        onChange={handleInputChange}>
+                                    <option value="" disabled={product.owner.hairColor} selected={true}>
+                                        Выберите цвет
+                                    </option>
+                                    {color.map((option) => (
+                                        <option key={option} value={option}>{option}</option>
+                                    ))}
+                                </select>
+                                {errors.ownerHairColor && <p className="error-popup">{errors.ownerHairColor}</p>}
                             </p>
                             <p>
-                                <span>Себестоимость</span>
-                                <input name="manufactureCost"
-                                       value={product.manufactureCost}
+                                <span>Рост</span>
+                                <input name="owner.height"
+                                       value={product.owner.height}
                                        onChange={handleInputChange}/>
-                                {errors.manufactureCost && <p className="error-popup">{errors.manufactureCost}</p>}
+                                {errors.ownerHeight && <p className="error-popup">{errors.ownerHeight}</p>}
                             </p>
                             <p>
-                                <span>Рейтинг</span>
-                                <input name="rating"
-                                       value={product.rating}
-                                       onChange={handleInputChange}/>
-                                {errors.rating && <p className="error-popup">{errors.rating}</p>}
+                                <span>Национальность</span>
+                                <select name="owner.nationality"
+                                        value={product.owner.nationality}
+                                        onChange={handleInputChange}>
+                                    <option value="" disabled={product.owner.nationality} selected={true}>
+                                        Выберите национальность
+                                    </option>
+                                    {country.map((option) => (
+                                        <option key={option} value={option}>{option}</option>
+                                    ))}
+                                </select>
+                                {errors.ownerNationality &&
+                                    <p className="error-popup">{errors.ownerNationality}</p>}
                             </p>
-
-
                             <div className="item-box">
-                                <h2>Координаты</h2>
+                                <h2>Город</h2>
                                 <p>
                                     <span>X</span>
-                                    <input name="coordinates.x" value={product.coordinates.x}
+                                    <input name="owner.location.x"
+                                           value={product.owner.location.x}
                                            onChange={handleInputChange}/>
-                                    {errors.coordinatesX && <p className="error-popup">{errors.coordinatesX}</p>}
+                                    {errors.ownerLocationX &&
+                                        <p className="error-popup">{errors.ownerLocationX}</p>}
                                 </p>
                                 <p>
                                     <span>Y</span>
-                                    <input name="coordinates.y" value={product.coordinates.y}
+                                    <input name="owner.location.y"
+                                           value={product.owner.location.y}
                                            onChange={handleInputChange}/>
-                                    {errors.coordinatesY && <p className="error-popup">{errors.coordinatesY}</p>}
+                                    {errors.ownerLocationY &&
+                                        <p className="error-popup">{errors.ownerLocationY}</p>}
                                 </p>
-                            </div>
-                        </div>
-                        <div className="item-box flex-row">
-                            <div>
-                                <h2>Владелец</h2>
                                 <p>
-                                    <span>Имя</span>
-                                    <input name="owner.name"
-                                           value={product.owner.name}
+                                    <span>Z</span>
+                                    <input name="owner.location.z"
+                                           value={product.owner.location.z}
                                            onChange={handleInputChange}/>
-                                    {errors.ownerName && <p className="error-popup">{errors.ownerName}</p>}
+                                    {errors.ownerLocationZ &&
+                                        <p className="error-popup">{errors.ownerLocationZ}</p>}
                                 </p>
-                                <p>
-                                    <span>Цвет глаз</span>
-                                    <select name="owner.eyeColor" value={product.owner.eyeColor}
-                                            onChange={handleInputChange}>
-                                        <option value="" disabled={product.owner.eyeColor} selected={true}>
-                                            Выберите цвет
-                                        </option>
-                                        {color.map((option) => (
-                                            <option key={option} value={option}>{option}</option>
-                                        ))}
-                                    </select>
-                                    {errors.ownerEyeColor && <p className="error-popup">{errors.ownerEyeColor}</p>}
-                                </p>
-                                <p>
-                                    <span>Цвет волос</span>
-                                    <select name="owner.hairColor"
-                                            value={product.owner.hairColor}
-                                            onChange={handleInputChange}>
-                                        <option value="" disabled={product.owner.hairColor} selected={true}>
-                                            Выберите цвет
-                                        </option>
-                                        {color.map((option) => (
-                                            <option key={option} value={option}>{option}</option>
-                                        ))}
-                                    </select>
-                                    {errors.ownerHairColor && <p className="error-popup">{errors.ownerHairColor}</p>}
-                                </p>
-                                <p>
-                                    <span>Рост</span>
-                                    <input name="owner.height"
-                                           value={product.owner.height}
-                                           onChange={handleInputChange}/>
-                                    {errors.ownerHeight && <p className="error-popup">{errors.ownerHeight}</p>}
-                                </p>
-                                <p>
-                                    <span>Национальность</span>
-                                    <select name="owner.nationality"
-                                            value={product.owner.nationality}
-                                            onChange={handleInputChange}>
-                                        <option value="" disabled={product.owner.nationality} selected={true}>
-                                            Выберите национальность
-                                        </option>
-                                        {country.map((option) => (
-                                            <option key={option} value={option}>{option}</option>
-                                        ))}
-                                    </select>
-                                    {errors.ownerNationality &&
-                                        <p className="error-popup">{errors.ownerNationality}</p>}
-                                </p>
-                                <div className="item-box">
-                                    <h2>Город</h2>
-                                    <p>
-                                        <span>X</span>
-                                        <input name="owner.location.x"
-                                               value={product.owner.location.x}
-                                               onChange={handleInputChange}/>
-                                        {errors.ownerLocationX &&
-                                            <p className="error-popup">{errors.ownerLocationX}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Y</span>
-                                        <input name="owner.location.y"
-                                               value={product.owner.location.y}
-                                               onChange={handleInputChange}/>
-                                        {errors.ownerLocationY &&
-                                            <p className="error-popup">{errors.ownerLocationY}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Z</span>
-                                        <input name="owner.location.z"
-                                               value={product.owner.location.z}
-                                               onChange={handleInputChange}/>
-                                        {errors.ownerLocationZ &&
-                                            <p className="error-popup">{errors.ownerLocationZ}</p>}
-                                    </p>
-                                    <p>
-                                        <span>Название</span>
-                                        <input name="owner.location.name"
-                                               value={product.owner.location.name}
-                                               onChange={handleInputChange}/>
-                                        {errors.ownerLocationName &&
-                                            <p className="error-popup">{errors.ownerLocationName}</p>}
-                                    </p>
-                                </div>
-                            </div>
-                            <SuggestObject mass={owners} name="owner" handleChoice={handleChoice} amountOfLabels={1}
-                                           labelKey="name"/>
-
-
-                        </div>
-
-                        <div className="item-box flex-row">
-                            <div>
-                                <h2>Производитель</h2>
                                 <p>
                                     <span>Название</span>
-                                    <input name="manufacturer.name"
-                                           value={product.manufacturer.name}
+                                    <input name="owner.location.name"
+                                           value={product.owner.location.name}
                                            onChange={handleInputChange}/>
-                                    {errors.manufacturerName &&
-                                        <p className="error-popup">{errors.manufacturerName}</p>}
+                                    {errors.ownerLocationName &&
+                                        <p className="error-popup">{errors.ownerLocationName}</p>}
                                 </p>
-                                <p>
-                                    <span>Ежегодный оборот</span>
-                                    <input name="manufacturer.annualTurnover"
-                                           value={product.manufacturer.annualTurnover}
-                                           onChange={handleInputChange}/>
-                                    {errors.annualTurnover && <p className="error-popup">{errors.annualTurnover}</p>}
-                                </p>
-                                <p>
-                                    <span>Количество работников</span>
-                                    <input name="manufacturer.employeesCount"
-                                           value={product.manufacturer.employeesCount}
-                                           onChange={handleInputChange}/>
-                                    {errors.employeesCount && <p className="error-popup">{errors.employeesCount}</p>}
-                                </p>
-                                <p>
-                                    <span>Полное название</span>
-                                    <input name="manufacturer.fullName"
-                                           value={product.manufacturer.fullName}
-                                           onChange={handleInputChange}/>
-                                    {errors.fullName && <p className="error-popup">{errors.fullName}</p>}
-                                </p>
-                                <p>
-                                    <span>Рейтинг</span>
-                                    <input name="manufacturer.rating"
-                                           value={product.manufacturer.rating}
-                                           onChange={handleInputChange}/>
-                                    {errors.manufacturerRating &&
-                                        <p className="error-popup">{errors.manufacturerRating}</p>}
-                                </p>
-
-                                <div className="item-box flex-row">
-                                    <div>
-                                        <h2>Официальный адрес </h2>
-                                        <p>
-                                            <span>Индекс</span>
-                                            <input name="manufacturer.officialAddress.zipCode"
-                                                   value={product.manufacturer.officialAddress.zipCode}
-                                                   onChange={handleInputChange}/>
-                                            {errors.zipCode &&
-                                                <p className="error-popup">{errors.zipCode}</p>}
-                                        </p>
-                                        <div className="item-box">
-                                            <h2>Город</h2>
-                                            <p>
-                                                <span>X</span>
-                                                <input name="manufacturer.officialAddress.town.x"
-                                                       value={product.manufacturer.officialAddress.town.x}
-                                                       onChange={handleInputChange}/>
-                                                {errors.townX &&
-                                                    <p className="error-popup">{errors.townX}</p>}
-                                            </p>
-                                            <p>
-                                                <span>Y</span>
-                                                <input name="manufacturer.officialAddress.town.y"
-                                                       value={product.manufacturer.officialAddress.town.y}
-                                                       onChange={handleInputChange}/>
-                                                {errors.townY &&
-                                                    <p className="error-popup">{errors.townY}</p>}
-                                            </p>
-                                            <p>
-                                                <span>Z</span>
-                                                <input name="manufacturer.officialAddress.town.z"
-                                                       value={product.manufacturer.officialAddress.town.z}
-                                                       onChange={handleInputChange}/>
-                                                {errors.townZ &&
-                                                    <p className="error-popup">{errors.townZ}</p>}
-                                            </p>
-                                            <p>
-                                                <span>Название</span>
-                                                <input name="manufacturer.officialAddress.town.name"
-                                                       value={product.manufacturer.officialAddress.town.name}
-                                                       onChange={handleInputChange}/>
-                                                {errors.townName &&
-                                                    <p className="error-popup">{errors.townName}</p>}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <SuggestObject mass={officialAddresses} name="manufacturer.officialAddress"
-                                                   handleChoice={handleChoice} amountOfLabels={1}
-                                                   labelKey="zipCode"/>
-                                </div>
                             </div>
-                            <SuggestObject mass={manufacturers} name="manufacturer" handleChoice={handleChoice}
-                                           amountOfLabels={1} labelKey="name"/>
                         </div>
+                        <SuggestObject mass={owners} name="owner" handleChoice={handleChoice} amountOfLabels={1}
+                                       labelKey="name"/>
+
+
+                    </div>
+
+                    <div className="item-box flex-row">
+                        <div>
+                            <h2>Производитель</h2>
+                            <p>
+                                <span>Название</span>
+                                <input name="manufacturer.name"
+                                       value={product.manufacturer.name}
+                                       onChange={handleInputChange}/>
+                                {errors.manufacturerName &&
+                                    <p className="error-popup">{errors.manufacturerName}</p>}
+                            </p>
+                            <p>
+                                <span>Ежегодный оборот</span>
+                                <input name="manufacturer.annualTurnover"
+                                       value={product.manufacturer.annualTurnover}
+                                       onChange={handleInputChange}/>
+                                {errors.annualTurnover && <p className="error-popup">{errors.annualTurnover}</p>}
+                            </p>
+                            <p>
+                                <span>Количество работников</span>
+                                <input name="manufacturer.employeesCount"
+                                       value={product.manufacturer.employeesCount}
+                                       onChange={handleInputChange}/>
+                                {errors.employeesCount && <p className="error-popup">{errors.employeesCount}</p>}
+                            </p>
+                            <p>
+                                <span>Полное название</span>
+                                <input name="manufacturer.fullName"
+                                       value={product.manufacturer.fullName}
+                                       onChange={handleInputChange}/>
+                                {errors.fullName && <p className="error-popup">{errors.fullName}</p>}
+                            </p>
+                            <p>
+                                <span>Рейтинг</span>
+                                <input name="manufacturer.rating"
+                                       value={product.manufacturer.rating}
+                                       onChange={handleInputChange}/>
+                                {errors.manufacturerRating &&
+                                    <p className="error-popup">{errors.manufacturerRating}</p>}
+                            </p>
+
+                            <div className="item-box flex-row">
+                                <div>
+                                    <h2>Официальный адрес </h2>
+                                    <p>
+                                        <span>Индекс</span>
+                                        <input name="manufacturer.officialAddress.zipCode"
+                                               value={product.manufacturer.officialAddress.zipCode}
+                                               onChange={handleInputChange}/>
+                                        {errors.zipCode &&
+                                            <p className="error-popup">{errors.zipCode}</p>}
+                                    </p>
+                                    <div className="item-box">
+                                        <h2>Город</h2>
+                                        <p>
+                                            <span>X</span>
+                                            <input name="manufacturer.officialAddress.town.x"
+                                                   value={product.manufacturer.officialAddress.town.x}
+                                                   onChange={handleInputChange}/>
+                                            {errors.townX &&
+                                                <p className="error-popup">{errors.townX}</p>}
+                                        </p>
+                                        <p>
+                                            <span>Y</span>
+                                            <input name="manufacturer.officialAddress.town.y"
+                                                   value={product.manufacturer.officialAddress.town.y}
+                                                   onChange={handleInputChange}/>
+                                            {errors.townY &&
+                                                <p className="error-popup">{errors.townY}</p>}
+                                        </p>
+                                        <p>
+                                            <span>Z</span>
+                                            <input name="manufacturer.officialAddress.town.z"
+                                                   value={product.manufacturer.officialAddress.town.z}
+                                                   onChange={handleInputChange}/>
+                                            {errors.townZ &&
+                                                <p className="error-popup">{errors.townZ}</p>}
+                                        </p>
+                                        <p>
+                                            <span>Название</span>
+                                            <input name="manufacturer.officialAddress.town.name"
+                                                   value={product.manufacturer.officialAddress.town.name}
+                                                   onChange={handleInputChange}/>
+                                            {errors.townName &&
+                                                <p className="error-popup">{errors.townName}</p>}
+                                        </p>
+                                    </div>
+                                </div>
+                                <SuggestObject mass={officialAddresses} name="manufacturer.officialAddress"
+                                               handleChoice={handleChoice} amountOfLabels={1}
+                                               labelKey="zipCode"/>
+                            </div>
+                        </div>
+                        <SuggestObject mass={manufacturers} name="manufacturer" handleChoice={handleChoice}
+                                       amountOfLabels={1} labelKey="name"/>
                     </div>
                 </div>
-                <p>
-                    <button className="btn btn-success"
-                            onClick={handleConfirmClick}>Добавить
-                    </button>
-                </p>
-
             </div>
+            <p>
+                <button className="btn btn-success"
+                        onClick={handleConfirmClick}>Добавить
+                </button>
+            </p>
+
         </div>
     );
 };

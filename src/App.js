@@ -15,6 +15,7 @@ import {persistor} from "./redux/store";
 import Administration from "./components/Administration"; // Импортируем стили
 import {ToastContainer} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ImportHistory from "./components/ImportHistory";
 
 const AppContent = () => {
     const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
@@ -42,6 +43,7 @@ const AppContent = () => {
                                 <div className="actions">
                                     <Administration/>
                                     <CreateProduct/>
+                                    <ImportHistory/>
                                     <Actions/>
                                 </div>
                             </div>
